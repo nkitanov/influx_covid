@@ -3,7 +3,7 @@
 from influxdb import InfluxDBClient
 
 client = InfluxDBClient(host='192.168.1.201', port=8086, database='home_assistant')
-avg=client.query("select last(value) from people where entity_id='bulgaria_coronavirus_confirmed'")
+avg=client.query("select last(value) from people where entity_id='bulgaria_coronavirus_confirmed' group by time(1d)")
 avg_list = []
 
 # https://influxdb-python.readthedocs.io/en/latest/resultset.html
