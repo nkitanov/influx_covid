@@ -5,9 +5,7 @@ from datetime import datetime, timedelta
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="home_assistant")
 
-today = datetime.today().strftime("%Y-%m-%d")
-yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
-
+today = (datetime.today() - timedelta(hours=2)).strftime("%Y-%m-%d")
 
 def rate(what):
     daily_last = client.query(
