@@ -19,9 +19,20 @@ def rate(what):
     second = daily_last_list[-2]["last"]
     third = daily_last_list[-3]["last"]
     if what == "rate":
+        if not first:
+            first = second
         return round((first - second) / (second - third), 2)
     elif what == "today":
+        if not first:
+            first = 0
         return first
+
+def db_new_daily():
+    qnew_daily = client.query("select last(value) from covid_today_confirmed")
+    new_daily_list = []
+    for i in qnew_daily.get_points():
+        new_daily_list.append(i)
+    return new_daily_list[-1]["last"]
 
 
 def db_rate():
@@ -61,8 +72,13 @@ if rate("rate") != db_rate():
     ]
     client.write_points(json_rate)
 
-day_cases = rate("today") - yesterday_cases()
-if rate("today") != day_cases:
+
+if rate("today") == 0:
+    day_cases = 0
+else:
+    day_cases = rate("today") - yesterday_cases()
+
+if rate("today") != db_new_daily():
     json_rate = [
         {"fields": {"value": day_cases}, "measurement": "covid_today_confirmed"}
     ]
