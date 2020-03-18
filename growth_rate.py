@@ -7,6 +7,7 @@ client = InfluxDBClient(host="192.168.1.201", port=8086, database="home_assistan
 
 today = (datetime.today() - timedelta(hours=2)).strftime("%Y-%m-%d")
 
+
 def rate(what):
     daily_last = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed' group by time(1d)"
@@ -20,12 +21,15 @@ def rate(what):
     third = daily_last_list[-3]["last"]
     if what == "rate":
         if not first:
-            first = second
+            first = (
+                second  # Redefine variable if today db query is none to use yesterday
+            )
         return round((first - second) / (second - third), 2)
     elif what == "today":
         if not first:
             first = 0
         return first
+
 
 def db_new_daily():
     qnew_daily = client.query("select last(value) from covid_today_confirmed")
@@ -66,6 +70,7 @@ def db_today():
     return qdb_today_list[-1]["last"]
 
 
+# Update only if there is change
 if rate("rate") != db_rate():
     json_rate = [
         {"fields": {"value": rate("rate")}, "measurement": "covid_current_rate"}
@@ -78,6 +83,7 @@ if rate("today") == 0:
 else:
     day_cases = rate("today") - yesterday_cases()
 
+# Update only if there is change
 if rate("today") != db_new_daily():
     json_rate = [
         {"fields": {"value": day_cases}, "measurement": "covid_today_confirmed"}
