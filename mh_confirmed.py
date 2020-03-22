@@ -19,6 +19,13 @@ def mh_deaths():
     return float(soup.find_all("td")[3].text)
 
 
+def mh_recovered():
+    return float(soup.find_all("td")[5].text)
+
+def death_rate():
+    return round(mh_deaths() / mh_confirmed() * 100, 2)
+
+
 def db_deaths():
     q_deaths = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_deaths'"
@@ -37,6 +44,21 @@ def db_current_confirmed():
     for i in q_confirmed.get_points():
         confirmed_list.append(i)
     return confirmed_list[-1]["last"]
+
+
+def db_recovered():
+    q = client.query("select last(value) from covid_recovered")
+    q_list = []
+    for i in q.get_points():
+        q_list.append(i)
+    return q_list[-1]["last"]
+
+def db_death_rate():
+    q = client.query("select last(value) from covid_death_rate")
+    q_list = []
+    for i in q.get_points():
+        q_list.append(i)
+    return q_list[-1]["last"]
 
 
 # Update db only if there is growth in confirmed cases
@@ -61,4 +83,12 @@ if mh_deaths() > db_deaths():
             "tags": {"entity_id": "bulgaria_coronavirus_deaths"},
         }
     ]
+    client.write_points(json)
+
+if mh_recovered() != db_recovered():
+    json = [{"fields": {"value": mh_recovered()}, "measurement": "covid_recovered"}]
+    client.write_points(json)
+
+if death_rate() != db_death_rate():
+    json = [{"fields": {"value": death_rate()}, "measurement": "covid_death_rate"}]
     client.write_points(json)
