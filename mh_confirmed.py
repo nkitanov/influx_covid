@@ -75,7 +75,7 @@ if mh_confirmed() > db_current_confirmed():
     ]
     client.write_points(json)
 
-if mh_deaths() > db_deaths():
+if mh_deaths() != db_deaths():
     json = [
         {
             "fields": {"value": mh_deaths(), "attribution_str": "Data by Bulgarian MH"},
