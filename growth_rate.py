@@ -9,16 +9,16 @@ today = (datetime.today() - timedelta(hours=2)).strftime("%Y-%m-%d")
 
 
 def rate(what):
-    daily_last = client.query(
+    q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed' group by time(1d)"
     )
-    daily_last_list = []
+    list = []
     # https://influxdb-python.readthedocs.io/en/latest/resultset.html
-    for i in daily_last.get_points():
-        daily_last_list.append(i)
-    first = daily_last_list[-1]["last"]
-    second = daily_last_list[-2]["last"]
-    third = daily_last_list[-3]["last"]
+    for i in q.get_points():
+        list.append(i)
+    first = list[-1]["last"]
+    second = list[-2]["last"]
+    third = list[-3]["last"]
     if what == "rate":
         if not first:
             first = (
