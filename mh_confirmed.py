@@ -22,47 +22,67 @@ def mh_deaths():
 def mh_recovered():
     return float(soup.find_all("td")[5].text)
 
+
 def death_rate():
     return round(mh_deaths() / mh_confirmed() * 100, 2)
 
 
 def db_deaths():
-    q_deaths = client.query(
+    q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_deaths'"
     )
-    deaths_list = []
-    for i in q_deaths.get_points():
-        deaths_list.append(i)
-    return deaths_list[-1]["last"]
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return list[-1]["last"]
 
 
 def db_current_confirmed():
-    q_confirmed = client.query(
+    q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed'"
     )
-    confirmed_list = []
-    for i in q_confirmed.get_points():
-        confirmed_list.append(i)
-    return confirmed_list[-1]["last"]
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return list[-1]["last"]
 
 
 def db_recovered():
     q = client.query("select last(value) from covid_recovered")
-    q_list = []
+    list = []
     for i in q.get_points():
-        q_list.append(i)
-    return q_list[-1]["last"]
+        list.append(i)
+    return list[-1]["last"]
+
 
 def db_death_rate():
     q = client.query("select last(value) from covid_death_rate")
-    q_list = []
+    list = []
     for i in q.get_points():
-        q_list.append(i)
-    return q_list[-1]["last"]
+        list.append(i)
+    return list[-1]["last"]
 
 
-# Update db only if there is growth in confirmed cases
-if mh_confirmed() > db_current_confirmed():
+def weekly_cases():
+    q = client.query(
+        "SELECT last(value) FROM people WHERE entity_id = 'bulgaria_coronavirus_confirmed' GROUP BY time(1w)"
+    )
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return float(list[-1]["last"] - list[-2]["last"])
+
+
+def db_weekly_cases():
+    q = client.query("select last(value) from covid_weekly")
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return list[-1]["last"]
+
+
+# Update db only if there is change
+if mh_confirmed() != db_current_confirmed():
     json = [
         {
             "fields": {
@@ -91,4 +111,8 @@ if mh_recovered() != db_recovered():
 
 if death_rate() != db_death_rate():
     json = [{"fields": {"value": death_rate()}, "measurement": "covid_death_rate"}]
+    client.write_points(json)
+
+if db_weekly_cases() != weekly_cases():
+    json = [{"fields": {"value": weekly_cases()}, "measurement": "covid_weekly"}]
     client.write_points(json)

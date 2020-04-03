@@ -32,42 +32,42 @@ def rate(what):
 
 
 def db_new_daily():
-    qnew_daily = client.query("select last(value) from covid_today_confirmed")
-    new_daily_list = []
-    for i in qnew_daily.get_points():
-        new_daily_list.append(i)
-    return new_daily_list[-1]["last"]
+    q = client.query("select last(value) from covid_today_confirmed")
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return list[-1]["last"]
 
 
 def db_rate():
-    ratedb = client.query("select last(value) from covid_current_rate")
-    ratedb_list = []
-    for i in ratedb.get_points():
-        ratedb_list.append(i)
-    return ratedb_list[-1]["last"]
+    q = client.query("select last(value) from covid_current_rate")
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return list[-1]["last"]
 
 
 def yesterday_cases():
-    qyesterday = client.query(
+    q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed' and time < '"
         + today
         + "' group by time(1d)"
     )
-    qyesterday_list = []
-    for i in qyesterday.get_points():
-        qyesterday_list.append(i)
-    if len(qyesterday_list) == 0:
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    if len(list) == 0:
         return 0
     else:
-        return qyesterday_list[-1]["last"]
+        return list[-1]["last"]
 
 
 def db_today():
-    qdb_today = client.query("select last(value) from covid_today_confirmed")
-    qdb_today_list = []
-    for i in qdb_today.get_points():
-        qdb_today_list.append(i)
-    return qdb_today_list[-1]["last"]
+    q = client.query("select last(value) from covid_today_confirmed")
+    list = []
+    for i in q.get_points():
+        list.append(i)
+    return list[-1]["last"]
 
 
 # Update only if there is change
@@ -83,7 +83,6 @@ if rate("today") == 0:
 else:
     day_cases = rate("today") - yesterday_cases()
 
-# Update only if there is change
 if rate("today") != db_new_daily():
     json_rate = [
         {"fields": {"value": day_cases}, "measurement": "covid_today_confirmed"}
