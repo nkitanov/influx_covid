@@ -1,6 +1,5 @@
 
 from influxdb import InfluxDBClient
-from datetime import date
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="home_assistant")
 
