@@ -19,19 +19,15 @@ for i in q.get_points():
         + "",
         epoch="s",
     )
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    timel = list[0]["time"]
+    lst = list(q.get_points())
+    timel = lst[0]["time"]
     days = round((timeh - timel) / 86400, 1)
 
 
 def db_time2double():
     q = client.query("select last(value) from covid_timedouble")
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[0]["last"]
+    lst = list(q.get_points())
+    return lst[0]["last"]
 
 
 if days != db_time2double():
