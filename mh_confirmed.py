@@ -63,24 +63,6 @@ def db_death_rate():
     return list[-1]["last"]
 
 
-def weekly_cases():
-    q = client.query(
-        "SELECT last(value) FROM people WHERE entity_id = 'bulgaria_coronavirus_confirmed' GROUP BY time(1w)"
-    )
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return float(list[-1]["last"] - list[-2]["last"])
-
-
-def db_weekly_cases():
-    q = client.query("select last(value) from covid_weekly")
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[-1]["last"]
-
-
 def weekly_rate():
     q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed' group by time(1w)"
@@ -132,10 +114,6 @@ if mh_recovered() != db_recovered():
 
 if death_rate() != db_death_rate():
     json = [{"fields": {"value": death_rate()}, "measurement": "covid_death_rate"}]
-    client.write_points(json)
-
-if db_weekly_cases() != weekly_cases():
-    json = [{"fields": {"value": weekly_cases()}, "measurement": "covid_weekly"}]
     client.write_points(json)
 
 if db_weekly_rate() != weekly_rate():
