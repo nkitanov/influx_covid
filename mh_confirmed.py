@@ -31,57 +31,28 @@ def db_deaths():
     q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_deaths'"
     )
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[-1]["last"]
+    lst = list(q.get_points())
+    return lst[-1]["last"]
 
 
 def db_current_confirmed():
     q = client.query(
         "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed'"
     )
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[-1]["last"]
+    lst = list(q.get_points())
+    return lst[-1]["last"]
 
 
 def db_recovered():
     q = client.query("select last(value) from covid_recovered")
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[-1]["last"]
+    lst = list(q.get_points())
+    return lst[-1]["last"]
 
 
 def db_death_rate():
     q = client.query("select last(value) from covid_death_rate")
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[-1]["last"]
-
-
-def weekly_rate():
-    q = client.query(
-        "select last(value) from people where entity_id='bulgaria_coronavirus_confirmed' group by time(1w)"
-    )
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    first = list[-1]["last"]
-    second = list[-2]["last"]
-    third = list[-3]["last"]
-    return round((first - second) / (second - third), 2)
-
-
-def db_weekly_rate():
-    q = client.query("select last(value) from covid_weekly_rate")
-    list = []
-    for i in q.get_points():
-        list.append(i)
-    return list[-1]["last"]
+    lst = list(q.get_points())
+    return lst[-1]["last"]
 
 
 # Update db only if there is change
@@ -114,8 +85,4 @@ if mh_recovered() != db_recovered():
 
 if death_rate() != db_death_rate():
     json = [{"fields": {"value": death_rate()}, "measurement": "covid_death_rate"}]
-    client.write_points(json)
-
-if db_weekly_rate() != weekly_rate():
-    json = [{"fields": {"value": weekly_rate()}, "measurement": "covid_weekly_rate"}]
     client.write_points(json)
