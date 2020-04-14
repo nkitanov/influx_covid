@@ -18,7 +18,9 @@ country_list = [
     "US",
     "Switzerland",
     "United Kingdom",
-    "Global",
+    "Italy",
+    "Spain",
+    "Global"
 ]
 
 d = {}
