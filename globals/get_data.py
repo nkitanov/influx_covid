@@ -18,7 +18,7 @@ country_list = [
     "US",
     "Switzerland",
     "United Kingdom",
-    "Global"
+    "Global",
 ]
 
 d = {}
@@ -30,6 +30,13 @@ d["Global"] = {
     "active": covid.get_total_active_cases(),
     "deaths": covid.get_total_deaths(),
 }
+
+
+def db_active(country):
+    q = client.query("select last(confirmed) from data where region='" + country + "'")
+    lst = list(q.get_points())
+    return lst[-1]["last"]
+
 
 for country in country_list:
     if country != "Global":
@@ -46,6 +53,6 @@ for country in country_list:
             },
         }
     ]
-    client.write_points(json)
 
-
+    if d[country]["confirmed"] != db_active(country):
+        client.write_points(json)
