@@ -20,6 +20,8 @@ country_list = [
     "United Kingdom",
     "Italy",
     "Spain",
+    "Sweden",
+    "Netherlands",
     "Global"
 ]
 
