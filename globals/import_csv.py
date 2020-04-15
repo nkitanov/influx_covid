@@ -6,35 +6,18 @@ import csv
 import os
 from datetime import datetime
 from influxdb import InfluxDBClient
+from country_list import country_list
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
 
 # Path to csv files
 path = "C:/Users/nki/git/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
 
-# Define countries
-country_list = [
-    "Belgium",
-    "Germany",
-    "Bulgaria",
-    "Japan",
-    "China",
-    "Malaysia",
-    "Ukraine",
-    "France",
-    "US",
-    "Switzerland",
-    "United Kingdom",
-    "Italy",
-    "Spain",
-    "Sweden",
-    "Netherlands",
-    "Global"
-]
-
 
 def date_convert(csv_date):
-    epoch_date = int(datetime.strptime(csv_date, "%m-%d-%Y").timestamp() + 10800) # Shift time forward to be 00:00 GMT
+    epoch_date = int(
+        datetime.strptime(csv_date, "%m-%d-%Y").timestamp() + 10800
+    )  # Shift time forward to be 00:00 GMT
     return epoch_date
 
 

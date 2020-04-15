@@ -2,28 +2,10 @@
 
 from covid import Covid
 from influxdb import InfluxDBClient
+from country_list import country_list
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
 covid = Covid()
-
-country_list = [
-    "Belgium",
-    "Germany",
-    "Bulgaria",
-    "Japan",
-    "China",
-    "Malaysia",
-    "Ukraine",
-    "France",
-    "US",
-    "Switzerland",
-    "United Kingdom",
-    "Italy",
-    "Spain",
-    "Sweden",
-    "Netherlands",
-    "Global"
-]
 
 
 def db_current_daily(country):
@@ -44,6 +26,7 @@ def db_current_weekly(country):
     )
     lst = list(q.get_points())
     return lst
+
 
 def rate(country, mode):
 
@@ -115,35 +98,36 @@ def time2double(country):
         l.append(d)
     return l
 
-for country in country_list:
-    
-    # lst = time2double(country)
-    # for x in lst:
-    #     json = [
-    #         {
-    #             "measurement": "rates",
-    #             "tags": {"region": country},
-    #             "time": x["time"],
-    #             "fields": {
-    #                 "time2double": x["time2double"]
-    #             },
-    #         }
-    #     ]
-    #     client.write_points(json, time_precision="s")
 
-    # lst = rate(country, "1w")
-    # for x in lst:
-    #     json = [
-    #         {
-    #             "measurement": "rates",
-    #             "tags": {"region": country},
-    #             "time": x["time"],
-    #             "fields": {
-    #                 "weekly_rate": x["weekly_rate"]
-    #             },
-    #         }
-    #     ]
-    #     client.write_points(json)
+for country in country_list:
+
+    lst = time2double(country)
+    for x in lst:
+        json = [
+            {
+                "measurement": "rates",
+                "tags": {"region": country},
+                "time": x["time"],
+                "fields": {
+                    "time2double": x["time2double"]
+                },
+            }
+        ]
+        client.write_points(json, time_precision="s")
+
+    lst = rate(country, "1w")
+    for x in lst:
+        json = [
+            {
+                "measurement": "rates",
+                "tags": {"region": country},
+                "time": x["time"],
+                "fields": {
+                    "weekly_rate": x["weekly_rate"]
+                },
+            }
+        ]
+        client.write_points(json)
 
     lst = rate(country, "1d")
     for x in lst:
@@ -152,9 +136,7 @@ for country in country_list:
                 "measurement": "rates",
                 "tags": {"region": country},
                 "time": x["time"],
-                "fields": {
-                    "daily_rate": x["daily_rate"]
-                },
+                "fields": {"daily_rate": x["daily_rate"]},
             }
         ]
         client.write_points(json)
