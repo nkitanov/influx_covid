@@ -12,12 +12,29 @@ client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global"
 # Path to csv files
 path = "C:/Users/nki/git/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
 
-# Define Global or Country based
-country = "United Kingdom"
+# Define countries
+country_list = [
+    "Belgium",
+    "Germany",
+    "Bulgaria",
+    "Japan",
+    "China",
+    "Malaysia",
+    "Ukraine",
+    "France",
+    "US",
+    "Switzerland",
+    "United Kingdom",
+    "Italy",
+    "Spain",
+    "Sweden",
+    "Netherlands",
+    "Global"
+]
 
 
 def date_convert(csv_date):
-    epoch_date = int(datetime.strptime(csv_date, "%m-%d-%Y").timestamp())
+    epoch_date = int(datetime.strptime(csv_date, "%m-%d-%Y").timestamp() + 10800) # Shift time forward to be 00:00 GMT
     return epoch_date
 
 
@@ -95,28 +112,29 @@ def get_numbers_country(csv_loc, country):
     return d
 
 
-dir_list = os.scandir(path)
-for f in dir_list:
-    csv_loc = path + f.name
-    csv_date = (os.path.splitext(csv_loc)[0]).split("/")[-1]
-    if country == "Global":
-        d = get_numbers(csv_loc)
-    else:
-        d = get_numbers_country(csv_loc, country)
+for country in country_list:
+    dir_list = os.scandir(path)
+    for f in dir_list:
+        csv_loc = path + f.name
+        csv_date = (os.path.splitext(csv_loc)[0]).split("/")[-1]
+        if country == "Global":
+            d = get_numbers(csv_loc)
+        else:
+            d = get_numbers_country(csv_loc, country)
 
-    json = [
-        {
-            "measurement": "data",
-            "tags": {"region": country},
-            "time": d["time"],
-            "fields": {
-                "confirmed": d["confirmed"],
-                "recovered": d["recovered"],
-                "active": d["active"],
-                "deaths": d["deaths"],
-            },
-        }
-    ]
+        json = [
+            {
+                "measurement": "data",
+                "tags": {"region": country},
+                "time": d["time"],
+                "fields": {
+                    "confirmed": d["confirmed"],
+                    "recovered": d["recovered"],
+                    "active": d["active"],
+                    "deaths": d["deaths"],
+                },
+            }
+        ]
 
-    # Write each day to influx
-    client.write_points(json, time_precision="s")
+        # Write each day to influx
+        client.write_points(json, time_precision="s")

@@ -2,28 +2,10 @@
 
 from covid import Covid
 from influxdb import InfluxDBClient
+from country_list import country_list
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
 covid = Covid()
-
-country_list = [
-    "Belgium",
-    "Germany",
-    "Bulgaria",
-    "Japan",
-    "China",
-    "Malaysia",
-    "Ukraine",
-    "France",
-    "US",
-    "Switzerland",
-    "United Kingdom",
-    "Italy",
-    "Spain",
-    "Sweden",
-    "Netherlands",
-    "Global"
-]
 
 d = {}
 
