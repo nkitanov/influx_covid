@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-from covid import Covid
 from influxdb import InfluxDBClient
 from country_list import country_list
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
-covid = Covid()
 
 
 def db_current_daily(country):
@@ -108,9 +106,7 @@ for country in country_list:
                 "measurement": "rates",
                 "tags": {"region": country},
                 "time": x["time"],
-                "fields": {
-                    "time2double": x["time2double"]
-                },
+                "fields": {"time2double": x["time2double"]},
             }
         ]
         client.write_points(json, time_precision="s")
@@ -122,9 +118,7 @@ for country in country_list:
                 "measurement": "rates",
                 "tags": {"region": country},
                 "time": x["time"],
-                "fields": {
-                    "weekly_rate": x["weekly_rate"]
-                },
+                "fields": {"weekly_rate": x["weekly_rate"]},
             }
         ]
         client.write_points(json)
