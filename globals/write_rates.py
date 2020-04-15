@@ -27,6 +27,25 @@ def db_weekly_rate(country):
     return l[0]["last"]
 
 
+def db_death_rate(country):
+    # return value only
+    q = client.query(
+        "select last(death_rate) from rates where region = '" + country + "'"
+    )
+    l = list(q.get_points())
+    try:
+        return l[0]["last"]
+    except IndexError:
+        return None
+
+
+def death_rate(country):
+    # return value only
+    q = client.query("select last(*) from data where region = '" + country + "'")
+    l = list(q.get_points())
+    return round((l[0]["last_deaths"] / l[0]["last_confirmed"]), 2)
+
+
 def db_timedouble(country):
     # Return last time2double single value
     d = {}
@@ -123,3 +142,13 @@ for country in country_list:
             }
         ]
         client.write_points(json, time_precision="s")
+
+    if db_death_rate(country) != death_rate(country):
+        json = [
+            {
+                "measurement": "rates",
+                "tags": {"region": country},
+                "fields": {"death_rate": death_rate(country)},
+            }
+        ]
+        client.write_points(json)
