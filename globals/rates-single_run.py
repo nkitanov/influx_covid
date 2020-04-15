@@ -28,7 +28,7 @@ country_list = [
 
 def db_current_daily(country):
     q = client.query(
-        "select difference(last(confiremed)) from data where region='"
+        "select difference(last(confirmed)) from data where region='"
         + country
         + "' and time > 1579651200 group by time(1d)"
     )

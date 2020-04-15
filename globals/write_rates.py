@@ -10,15 +10,11 @@ def db_daily_rate(country):
     # {'time': '2020-04-14T00:00:00Z', 'rate': None}
     d = {}
     q = client.query(
-        "select last(*) from rates where region='"
-        + country
-        + "' and time = '"
-        + daily_rate(country)["time"]
-        + "'"
+        "select last(daily_rate) from rates where region='" + country + "'"
     )
     l = list(q.get_points())
     d["time"] = l[0]["time"]
-    d["rate"] = l[0]["last_daily_rate"]
+    d["rate"] = l[0]["last"]
     return d
 
 
@@ -29,6 +25,42 @@ def db_weekly_rate(country):
     )
     l = list(q.get_points())
     return l[0]["last"]
+
+
+def db_timedouble(country):
+    # Return last time2double single value
+    d = {}
+    q = client.query(
+        "select last(time2double) from rates where region='" + country + "'", epoch="s"
+    )
+    l = list(q.get_points())
+    return l[0]["last"]
+
+
+def timedouble(country):
+    # Return {'time': 1586936948, 'time2double': 16.3, 'region': 'Bulgaria'}
+    d = {}
+    q = client.query(
+        "select last(confirmed) from data where region='" + country + "'", epoch="s"
+    )
+    l = list(q.get_points())
+    timeh = l[0]["time"]
+    half = l[0]["last"] / 2
+    q = client.query(
+        "select last(confirmed) from data where region='"
+        + country
+        + "' and confirmed < "
+        + str(half)
+        + "",
+        epoch="s",
+    )
+    l = list(q.get_points())
+    timel = l[0]["time"]
+    days = round((timeh - timel) / 86400, 1)
+    d["time"] = timeh
+    d["time2double"] = days
+    d["region"] = country
+    return d
 
 
 def daily_rate(country):
@@ -80,3 +112,14 @@ for country in country_list:
             }
         ]
         client.write_points(json)
+
+    if db_timedouble(country) != timedouble(country):
+        json = [
+            {
+                "measurement": "rates",
+                "tags": {"region": country},
+                "time": timedouble(country)["time"],
+                "fields": {"time2double": timedouble(country)["time2double"]},
+            }
+        ]
+        client.write_points(json, time_precision="s")
