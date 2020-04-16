@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 from influxdb import InfluxDBClient
+from datetime import date
 
+today = date.today().isoformat()
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="home_assistant")
 
 q = client.query(
@@ -25,11 +27,17 @@ for i in q.get_points():
 
 
 def db_time2double():
+    d = {}
     q = client.query("select last(value) from covid_timedouble")
     lst = list(q.get_points())
-    return lst[0]["last"]
+    d["days"] = lst[0]["last"]
+    d["time"] = lst[0]["time"].split("T")[0]
+    return d
 
 
-if days != db_time2double():
+if days != db_time2double()["days"]:
+    json = [{"fields": {"value": days}, "measurement": "covid_timedouble"}]
+    client.write_points(json)
+elif today != db_time2double()["time"]:  # Update also if the diff is same for the current day
     json = [{"fields": {"value": days}, "measurement": "covid_timedouble"}]
     client.write_points(json)
