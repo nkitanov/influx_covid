@@ -16,22 +16,24 @@ There are two Influx measurements which holds the data - `data` and `rates`, her
 
 ```
 name: data
-time                 active confirmed deaths recovered region
-----                 ------ --------- ------ --------- ------
-2020-04-05T00:00:00Z 14493  19691     1447   3751      Belgium
-2020-04-05T00:00:00Z 43264  48436     4943   229       United Kingdom
-2020-04-05T00:00:00Z 1243   1308      37     28        Ukraine
-2020-04-05T00:00:00Z 310005 337072    9619   17448     US
-2020-04-05T00:00:00Z 13970  21100     715    6415      Switzerland
+time                           active confirmed deaths recovered region
+----                           ------ --------- ------ --------- ------
+2020-04-15T07:49:08.037606841Z 56115  132210    3495   72600     Germany
+2020-04-15T07:49:08.538556489Z 594    735       36     105       Bulgaria
+2020-04-15T07:49:08.991404679Z 7101   8100      146    853       Japan
+2020-04-15T07:49:09.250958065Z 1740   83351     3346   78265     China
+2020-04-15T07:49:10.879540113Z 86491  131362    15750  29121     France
+
 ```
 
 ```
 name: rates
-time                 daily_rate death_rate region         time2double weekly_rate
-----                 ---------- ---------- ------         ----------- -----------
-2020-04-05T00:00:00Z 0.76                  Belgium        8
-2020-04-05T00:00:00Z 1.57                  United Kingdom 6
-2020-04-05T00:00:00Z 0.54                  Ukraine        5
-2020-04-05T00:00:00Z 0.85                  US             6
-2020-04-05T00:00:00Z 0.66                  Switzerland    12
+time                 daily_rate death_rate region   time2double weekly_rate
+----                 ---------- ---------- ------   ----------- -----------
+2020-04-15T07:49:08Z                       Bulgaria 16.3
+2020-04-15T07:49:08Z                       Japan    8.3
+2020-04-15T07:49:08Z                       Germany  17.3
+2020-04-15T07:49:10Z                       France   12.3
+2020-04-15T08:11:04Z                       Ukraine  7.3
+
 ```
