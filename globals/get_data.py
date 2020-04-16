@@ -9,7 +9,7 @@ covid = Covid()
 
 d = {}
 
-# Get globals as they cannot be queried like countres
+# Get globals as they cannot be queried by county from covid library
 d["Global"] = {
     "confirmed": covid.get_total_confirmed_cases(),
     "recovered": covid.get_total_recovered(),
@@ -18,7 +18,7 @@ d["Global"] = {
 }
 
 
-def db_active(country):
+def db_current(country):
     q = client.query("select last(confirmed) from data where region='" + country + "'")
     lst = list(q.get_points())
     return lst[-1]["last"]
@@ -39,6 +39,6 @@ for country in country_list:
             },
         }
     ]
-
-    if d[country]["confirmed"] != db_active(country):
+    # Update db only if there is change in confirmed
+    if d[country]["confirmed"] != db_current(country):
         client.write_points(json)

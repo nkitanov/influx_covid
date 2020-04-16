@@ -7,7 +7,7 @@ client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global"
 
 
 def db_daily_rate(country):
-    # {'time': '2020-04-14T00:00:00Z', 'rate': None}
+    # Return like {'time': '2020-04-14T00:00:00Z', 'rate': None}
     d = {}
     q = client.query(
         "select last(daily_rate) from rates where region='" + country + "'"
@@ -19,7 +19,7 @@ def db_daily_rate(country):
 
 
 def db_weekly_rate(country):
-    # return last weekly value
+    # Return last weekly value
     q = client.query(
         "select last(weekly_rate) from rates where region='" + country + "'"
     )
@@ -28,7 +28,7 @@ def db_weekly_rate(country):
 
 
 def db_death_rate(country):
-    # return value only
+    # Return last death rate value
     q = client.query(
         "select last(death_rate) from rates where region = '" + country + "'"
     )
@@ -40,14 +40,14 @@ def db_death_rate(country):
 
 
 def death_rate(country):
-    # return value only
+    # Return current value
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
     return round((l[0]["last_deaths"] / l[0]["last_confirmed"]), 2)
 
 
 def db_timedouble(country):
-    # Return last time2double single value
+    # Return last time2double value
     d = {}
     q = client.query(
         "select last(time2double) from rates where region='" + country + "'", epoch="s"
@@ -57,7 +57,7 @@ def db_timedouble(country):
 
 
 def timedouble(country):
-    # Return {'time': 1586936948, 'time2double': 16.3, 'region': 'Bulgaria'}
+    # Return like {'time': 1586936948, 'time2double': 16.3, 'region': 'Bulgaria'}
     d = {}
     q = client.query(
         "select last(confirmed) from data where region='" + country + "'", epoch="s"
@@ -83,7 +83,7 @@ def timedouble(country):
 
 
 def daily_rate(country):
-    # {'time': '2020-04-14T00:00:00Z', 'rate': 0.9}
+    # Return like {'time': '2020-04-14T00:00:00Z', 'rate': 0.9}
     d = {}
     q = client.query(
         "select difference(last(confirmed)) from data where region='"
@@ -109,6 +109,7 @@ def weekly_rate(country):
     return float(rate)
 
 
+# Iterate over countries and write db only on change
 for country in country_list:
 
     if db_daily_rate(country)["rate"] != daily_rate(country)["rate"]:
