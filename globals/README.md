@@ -2,6 +2,7 @@
 
 Backend calculations and update scripts for https://covid.rally-club.bg/d/covid-global/covid-19-global dashboard.
 
+- `Covid-19 Global.json` - Grafana Dashboard config
 - `country_list.py` list with countries to update
 - `get_data.py` - pull data with [covid library](https://pypi.org/project/covid/) and update influx on regular intervals
 - `import_csv.py` - initial update of the db with data from csv files from [John Hopkins repo](https://github.com/CSSEGISandData/COVID-19)
