@@ -7,7 +7,7 @@ client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global"
 
 
 def db_daily_rate(country):
-    # Return like {'time': '2020-04-14T00:00:00Z', 'rate': None}
+    # Return like {'time': '2020-04-14T00:00:00Z', 'rate': 0.5}
     d = {}
     q = client.query(
         "select last(daily_rate) from rates where region='" + country + "'"
@@ -40,7 +40,7 @@ def db_death_rate(country):
 
 
 def death_rate(country):
-    # Return current value
+    # Return current death_rate value
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
     return round((l[0]["last_deaths"] / l[0]["last_confirmed"]), 2)
