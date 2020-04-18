@@ -43,7 +43,7 @@ def death_rate(country):
     # Return current death_rate value
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
-    return round((l[0]["last_deaths"] / l[0]["last_confirmed"]), 2)
+    return round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
 
 
 def db_timedouble(country):
