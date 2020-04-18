@@ -48,7 +48,6 @@ def death_rate(country):
 
 def db_timedouble(country):
     # Return last time2double value
-    d = {}
     q = client.query(
         "select last(time2double) from rates where region='" + country + "'", epoch="s"
     )
@@ -98,7 +97,6 @@ def daily_rate(country):
 
 def weekly_rate(country):
     # return current rate
-    d = {}
     q = client.query(
         "select difference(last(confirmed)) from data where region='"
         + country
