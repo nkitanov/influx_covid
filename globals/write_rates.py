@@ -6,6 +6,27 @@ from country_list import country_list
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
 
 
+# Dict with country population
+population = {
+    "Belgium": 11589623,
+    "Germany": 83783942,
+    "Bulgaria": 6948445,
+    "Japan": 126476461,
+    "China": 1439323776,
+    "Malaysia": 32365999,
+    "Ukraine": 43733762,
+    "France": 65273511,
+    "US": 331002651,
+    "Switzerland": 8654622,
+    "United Kingdom": 67886011,
+    "Italy": 60461826,
+    "Spain": 46754778,
+    "Sweden": 10099265,
+    "Netherlands": 17134872,
+    "Global" : 7580000000
+}
+
+
 def db_daily_rate(country):
     # Return like {'time': '2020-04-14T00:00:00Z', 'rate': 0.5}
     d = {}
@@ -40,10 +61,15 @@ def db_death_rate(country):
 
 
 def death_rate(country):
-    # Return current death_rate value
+    # Return dict like {'percent': 13.28, 'dpm': 237.09, 'country': 'United Kingdom'}
+    d = {}
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
-    return round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
+    d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
+    d["dpm"] = round(l[0]["last_deaths"]/(population[country]/1e+6), 2)
+    d["country"] = country
+    return d
+
 
 
 def db_timedouble(country):
@@ -142,12 +168,15 @@ for country in country_list:
         ]
         client.write_points(json, time_precision="s")
 
-    if db_death_rate(country) != death_rate(country):
+    if db_death_rate(country) != death_rate(country)["percent"]:
         json = [
             {
                 "measurement": "rates",
                 "tags": {"region": country},
-                "fields": {"death_rate": death_rate(country)},
+                "fields": {
+                    "death_rate": death_rate(country)["percent"],
+                    "death_pm": death_rate(country)["dpm"]
+                },
             }
         ]
         client.write_points(json)
