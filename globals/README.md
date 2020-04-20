@@ -13,7 +13,7 @@ There are two Influx measurements which holds the data - `data` and `rates`, her
 
 ```data,region=Belgium confirmed=1 recovered=1 active=1 deaths=1 ```
 
-```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05```
+```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05 death_pm=50.2```
 
 ```
 name: data
@@ -29,12 +29,11 @@ time                           active confirmed deaths recovered region
 
 ```
 name: rates
-time                 daily_rate death_rate region   time2double weekly_rate
-----                 ---------- ---------- ------   ----------- -----------
-2020-04-15T07:49:08Z                       Bulgaria 16.3
-2020-04-15T07:49:08Z                       Japan    8.3
-2020-04-15T07:49:08Z                       Germany  17.3
-2020-04-15T07:49:10Z                       France   12.3
-2020-04-15T08:11:04Z                       Ukraine  7.3
-
+time                           daily_rate death_pm death_rate region  time2double weekly_rate
+----                           ---------- -------- ---------- ------  ----------- -----------
+2020-04-20T17:55:14.159330486Z                                Global              0.71
+2020-04-20T17:55:13.390983368Z                                US                  0.63
+2020-04-20T17:55:12.634030322Z            55.89    3.2        Germany
+2020-04-20T17:55:12.530394013Z                                Germany             0.54
+2020-04-20T17:55:11Z                                          Global  16.7
 ```
