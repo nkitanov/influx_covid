@@ -1,30 +1,9 @@
 #!/usr/bin/env python3
 
 from influxdb import InfluxDBClient
-from country_list import country_list
+from country_list import country_list, population
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
-
-
-# Dict with country population
-population = {
-    "Belgium": 11589623,
-    "Germany": 83783942,
-    "Bulgaria": 6948445,
-    "Japan": 126476461,
-    "China": 1439323776,
-    "Malaysia": 32365999,
-    "Ukraine": 43733762,
-    "France": 65273511,
-    "US": 331002651,
-    "Switzerland": 8654622,
-    "United Kingdom": 67886011,
-    "Italy": 60461826,
-    "Spain": 46754778,
-    "Sweden": 10099265,
-    "Netherlands": 17134872,
-    "Global" : 7580000000
-}
 
 
 def db_daily_rate(country):
@@ -66,10 +45,9 @@ def death_rate(country):
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
     d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
-    d["dpm"] = round(l[0]["last_deaths"]/(population[country]/1e+6), 2)
+    d["dpm"] = round(l[0]["last_deaths"] / (population[country] / 1e6), 2)
     d["country"] = country
     return d
-
 
 
 def db_timedouble(country):
@@ -175,7 +153,7 @@ for country in country_list:
                 "tags": {"region": country},
                 "fields": {
                     "death_rate": death_rate(country)["percent"],
-                    "death_pm": death_rate(country)["dpm"]
+                    "death_pm": death_rate(country)["dpm"],
                 },
             }
         ]
