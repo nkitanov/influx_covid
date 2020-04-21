@@ -18,7 +18,8 @@ country_list = [
     "Turkey",
     "Greece",
     "Serbia",
-    "Romania"
+    "Romania",
+    "Russia"
 ]
 
 # Dict with country population
@@ -42,5 +43,6 @@ population = {
     "Turkey": 84339067,
     "Greece": 10423054,
     "Serbia": 8737371,
-    "Romania": 19237691
+    "Romania": 19237691,
+    "Russia": 145934462
 }

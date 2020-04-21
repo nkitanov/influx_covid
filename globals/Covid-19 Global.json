@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1587493611345,
+  "iteration": 1587498166471,
   "links": [],
   "panels": [
     {
@@ -4205,7 +4205,7 @@
           ]
         },
         {
-          "alias": "Global",
+          "alias": "Russia",
           "groupBy": [
             {
               "params": [
@@ -4224,6 +4224,49 @@
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "P",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "death_pm"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=",
+              "value": "Russia"
+            }
+          ]
+        },
+        {
+          "alias": "Global",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "rates",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "U",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4281,9 +4324,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "Japan",
-          "value": "Japan"
+          "selected": true,
+          "text": "Russia",
+          "value": "Russia"
         },
         "hide": 0,
         "includeAll": false,
@@ -4342,7 +4385,7 @@
             "value": "Malaysia"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "Japan",
             "value": "Japan"
           },
@@ -4390,9 +4433,14 @@
             "selected": false,
             "text": "Romania",
             "value": "Romania"
+          },
+          {
+            "selected": true,
+            "text": "Russia",
+            "value": "Russia"
           }
         ],
-        "query": "Global, Belgium, Bulgaria, Germany, France, US, Ukraine, China, Switzerland, Malaysia, Japan, United Kingdom, Italy, Spain, Netherlands, Sweden, Turkey, Greece, Serbia, Romania",
+        "query": "Global, Belgium, Bulgaria, Germany, France, US, Ukraine, China, Switzerland, Malaysia, Japan, United Kingdom, Italy, Spain, Netherlands, Sweden, Turkey, Greece, Serbia, Romania, Russia",
         "skipUrlSync": false,
         "type": "custom"
       }
@@ -4420,5 +4468,5 @@
   "timezone": "",
   "title": "Covid-19 Global",
   "uid": "covid-global",
-  "version": 51
+  "version": 52
 }
