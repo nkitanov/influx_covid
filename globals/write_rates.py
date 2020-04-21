@@ -44,8 +44,8 @@ def death_rate(country):
     d = {}
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
-    d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
-    d["dpm"] = round(l[0]["last_deaths"] / (population[country] / 1e6), 2)
+    d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 1)
+    d["dpm"] = round(l[0]["last_deaths"] / (population[country] / 1e6), 1)
     d["country"] = country
     return d
 
