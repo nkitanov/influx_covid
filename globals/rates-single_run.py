@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 from influxdb import InfluxDBClient
-from country_list import country_list
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
+
+# Control manually list of countries to import (don't import from country_list)
+country_list = ["Turkey", "Greece", "Serbia", "Romania"]
 
 
 def db_current_daily(country):
@@ -45,7 +47,6 @@ def rate(country, mode):
             r = round(lst[x]["difference"] / lst[x - 1]["difference"], 2)
         except ZeroDivisionError:
             r = lst[x]["difference"]
-        # print("item:", x, "dict:", lst[x], "rate:", r_active)
         d["time"] = lst[x]["time"]
         if mode == "1d":
             d["daily_rate"] = float(r)

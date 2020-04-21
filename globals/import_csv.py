@@ -6,12 +6,14 @@ import csv
 import os
 from datetime import datetime
 from influxdb import InfluxDBClient
-from country_list import country_list
 
 client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
 
 # Path to csv files
 path = "C:/Users/nki/git/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
+
+# Control manually list of countries to import (don't import from country_list)
+country_list = ["Turkey", "Greece", "Serbia", "Romania"]
 
 
 def date_convert(csv_date):
@@ -121,3 +123,4 @@ for country in country_list:
 
         # Write each day to influx
         client.write_points(json, time_precision="s")
+

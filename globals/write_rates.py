@@ -95,7 +95,10 @@ def daily_rate(country):
     )
     lst = list(q.get_points())
     d["time"] = lst[-1]["time"]
-    d["rate"] = round(lst[-1]["difference"] / lst[-2]["difference"], 2)
+    try:
+        d["rate"] = round(lst[-1]["difference"] / lst[-2]["difference"], 2)
+    except ZeroDivisionError:
+        d["rate"] = round(lst[-1]["difference"], 2) # If no new cases prev day "rate" = new day case
     return d
 
 
@@ -120,7 +123,7 @@ for country in country_list:
                 "measurement": "rates",
                 "tags": {"region": country},
                 "time": daily_rate(country)["time"],
-                "fields": {"daily_rate": daily_rate(country)["rate"]},
+                "fields": {"daily_rate": float(daily_rate(country)["rate"])},
             }
         ]
         client.write_points(json)
