@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 
+import sys
 from covid import Covid
 from influxdb import InfluxDBClient
 from country_list import country_list
 
-client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
+# Influx host is different if I run it from my Win PC
+if sys.platform == "linux":
+    influx_host = "localhost"
+else:
+    influx_host = "35.207.86.81"
+
+
+client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
 covid = Covid()
 
 d = {}

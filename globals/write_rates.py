@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 
+import sys
 from influxdb import InfluxDBClient
 from country_list import country_list, population
 
-client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
+# Influx host is different if I run it from my Win PC
+if sys.platform == "linux":
+    influx_host = "localhost"
+else:
+    influx_host = "35.207.86.81"
+
+client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
 
 
 def db_daily_rate(country):
@@ -98,7 +105,9 @@ def daily_rate(country):
     try:
         d["rate"] = round(lst[-1]["difference"] / lst[-2]["difference"], 2)
     except ZeroDivisionError:
-        d["rate"] = round(lst[-1]["difference"], 2) # If no new cases prev day "rate" = new day case
+        d["rate"] = round(
+            lst[-1]["difference"], 2
+        )  # If no new cases prev day "rate" = new day case
     return d
 
 
