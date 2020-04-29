@@ -11,19 +11,11 @@ if sys.platform == "linux":
 else:
     influx_host = "35.207.86.81"
 
-
 client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
-covid = Covid()
+covid = Covid(source="worldometers")
 
 d = {}
-
-# Get globals as they cannot be queried by county from covid library
-d["Global"] = {
-    "confirmed": covid.get_total_confirmed_cases(),
-    "recovered": covid.get_total_recovered(),
-    "active": covid.get_total_active_cases(),
-    "deaths": covid.get_total_deaths(),
-}
+global_tests = 0
 
 
 def db_current(country):
@@ -32,9 +24,31 @@ def db_current(country):
     return lst[-1]["last"]
 
 
+# Calculate Global tests by iterating all countries
+all_countries = covid.list_countries()
+for country in all_countries:
+    global_tests += covid.get_status_by_country_name(country)["total_tests"]
+
+# Get globals as they cannot be queried by county from covid library
+d["Global"] = {
+    "confirmed": covid.get_total_confirmed_cases(),
+    "recovered": covid.get_total_recovered(),
+    "active": covid.get_total_active_cases(),
+    "deaths": covid.get_total_deaths(),
+    "total_tests": global_tests,
+}
+
+
 for country in country_list:
     if country != "Global":
-        d[country] = covid.get_status_by_country_name(country)
+        # Redefine country for UK and US because wordometers use UK and USA
+        if country == "US":
+            wcountry = "USA"
+        elif country == "United Kingdom":
+            wcountry = "UK"
+        else:
+            wcountry = country
+        d[country] = covid.get_status_by_country_name(wcountry)
     json = [
         {
             "measurement": "data",
@@ -44,9 +58,11 @@ for country in country_list:
                 "recovered": d[country]["recovered"],
                 "active": d[country]["active"],
                 "deaths": d[country]["deaths"],
+                "tested": d[country]["total_tests"],
             },
         }
     ]
+
     # Update db only if there is change in confirmed
     if d[country]["confirmed"] != db_current(country):
         client.write_points(json)

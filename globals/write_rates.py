@@ -3,6 +3,7 @@
 import sys
 from influxdb import InfluxDBClient
 from country_list import country_list, population
+from get_data import db_current
 
 # Influx host is different if I run it from my Win PC
 if sys.platform == "linux":
@@ -53,6 +54,27 @@ def death_rate(country):
     l = list(q.get_points())
     d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
     d["dpm"] = round(l[0]["last_deaths"] / (population[country] / 1e6), 2)
+    d["country"] = country
+    return d
+
+
+def db_test_rate(country):
+    # Return last test rate per milion value
+    q = client.query(
+        "select last(tested_milion) from rates where region='" + country + "'",
+        epoch="s",
+    )
+    l = list(q.get_points())
+    return l[0]["last"]
+
+
+def test_rate(country):
+    # Return dict like {'tested_milion': 19563.0, 'tested_confirmed': 5.0, 'country': 'Belgium'}
+    d = {}
+    q = client.query("select last(*) from data where region = '" + country + "'")
+    l = list(q.get_points())
+    d["tested_milion"] = round((l[0]["last_tested"] / (population[country] / 1e6)), 0)
+    d["tested_confirmed"] = round(l[0]["last_tested"] / db_current(country), 0)
     d["country"] = country
     return d
 
@@ -166,6 +188,20 @@ for country in country_list:
                 "fields": {
                     "death_rate": death_rate(country)["percent"],
                     "death_pm": death_rate(country)["dpm"],
+                },
+            }
+        ]
+        client.write_points(json)
+
+    print(db_test_rate(country), test_rate(country)["tested_milion"])
+    if db_test_rate(country) != test_rate(country)["tested_milion"]:
+        json = [
+            {
+                "measurement": "rates",
+                "tags": {"region": country},
+                "fields": {
+                    "tested_milion": test_rate(country)["tested_milion"],
+                    "tested_confirmed": test_rate(country)["tested_confirmed"],
                 },
             }
         ]
