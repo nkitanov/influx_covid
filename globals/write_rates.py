@@ -147,61 +147,64 @@ def weekly_rate(country):
 
 # Iterate over countries and write db only on change
 for country in country_list:
-
-    if db_daily_rate(country)["rate"] != daily_rate(country)["rate"]:
+    daily_rate_dict = daily_rate(country)
+    if db_daily_rate(country)["rate"] != daily_rate_dict["rate"]:
         json = [
             {
                 "measurement": "rates",
                 "tags": {"region": country},
-                "time": daily_rate(country)["time"],
-                "fields": {"daily_rate": float(daily_rate(country)["rate"])},
+                "time": daily_rate_dict["time"],
+                "fields": {"daily_rate": float(daily_rate_dict["rate"])},
             }
         ]
         client.write_points(json)
 
-    if db_weekly_rate(country) != weekly_rate(country):
+    weekly_r = weekly_rate(country)
+    if db_weekly_rate(country) != weekly_r:
         json = [
             {
                 "measurement": "rates",
                 "tags": {"region": country},
-                "fields": {"weekly_rate": weekly_rate(country)},
+                "fields": {"weekly_rate": weekly_r},
             }
         ]
         client.write_points(json)
 
-    if db_timedouble(country) != timedouble(country):
+    timedouble_dict = timedouble(country)
+    if db_timedouble(country) != timedouble_dict["time2double"]:
         json = [
             {
                 "measurement": "rates",
                 "tags": {"region": country},
-                "time": timedouble(country)["time"],
-                "fields": {"time2double": timedouble(country)["time2double"]},
+                "time": timedouble_dict["time"],
+                "fields": {"time2double": timedouble_dict["time2double"]},
             }
         ]
         client.write_points(json, time_precision="s")
 
-    if db_death_rate(country) != death_rate(country)["percent"]:
+    death_rate_dict = death_rate(country)
+    if db_death_rate(country) != death_rate_dict["percent"]:
         json = [
             {
                 "measurement": "rates",
                 "tags": {"region": country},
                 "fields": {
-                    "death_rate": death_rate(country)["percent"],
-                    "death_pm": death_rate(country)["dpm"],
+                    "death_rate": death_rate_dict["percent"],
+                    "death_pm": death_rate_dict["dpm"],
                 },
             }
         ]
         client.write_points(json)
 
-    print(db_test_rate(country), test_rate(country)["tested_milion"])
-    if db_test_rate(country) != test_rate(country)["tested_milion"]:
+    test_rate_dict = test_rate(country)
+    if db_test_rate(country) != test_rate_dict["tested_milion"]:
         json = [
             {
                 "measurement": "rates",
                 "tags": {"region": country},
                 "fields": {
-                    "tested_milion": test_rate(country)["tested_milion"],
-                    "tested_confirmed": test_rate(country)["tested_confirmed"],
+                    "tested_milion": test_rate_dict["tested_milion"],
+                    "tested_confirmed": test_rate_dict["tested_confirmed"],
                 },
             }
         ]
