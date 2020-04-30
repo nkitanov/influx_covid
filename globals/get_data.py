@@ -42,7 +42,7 @@ d["Global"] = {
 for country in country_list:
     if country != "Global":
         # Redefine country for UK and US because wordometers use UK and USA
-        # remove the if statement and change wcountry to countly in covid get statement
+        # remove the if statement and change wcountry to 'country' argument in covid get statement
         # for John Hopkins data
         if country == "US":
             wcountry = "USA"
