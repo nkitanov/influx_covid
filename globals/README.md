@@ -9,31 +9,31 @@ Backend calculations and update scripts for https://covid.rally-club.bg/d/covid-
 - `rates-single_run.py` - single run to update rate data after initial csv import
 - `write_rates.py` - periodic update of daily, weekly, death rates and time to double
 
-There are two Influx measurements which holds the data - `data` and `rates`, here are the schemas in influx line protocol example, region is a tag key:
+There are two Influx measurements which holds the data - `data` and `rates`, here are the schemas in influx line protocol example, **region is a tag key**:
 
-```data,region=Belgium confirmed=1 recovered=1 active=1 deaths=1 ```
+```data,region=Belgium confirmed=1 recovered=1 active=1 deaths=1 tested=42343```
 
-```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05 death_pm=50.2```
+```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05 death_pm=50.2 tested_milion=12034 tested_confirmed=10```
 
 ```
 name: data
-time                           active confirmed deaths recovered region
-----                           ------ --------- ------ --------- ------
-2020-04-15T07:49:08.037606841Z 56115  132210    3495   72600     Germany
-2020-04-15T07:49:08.538556489Z 594    735       36     105       Bulgaria
-2020-04-15T07:49:08.991404679Z 7101   8100      146    853       Japan
-2020-04-15T07:49:09.250958065Z 1740   83351     3346   78265     China
-2020-04-15T07:49:10.879540113Z 86491  131362    15750  29121     France
+time                           active  confirmed deaths recovered region   tested
+----                           ------  --------- ------ --------- ------   ------
+2020-04-30T06:40:03.663807311Z 1988125 3221617   228263 1005229   Global   32019440
+2020-04-30T06:40:03.626811538Z 8907    10406     261    1238      Ukraine  111859
+2020-04-30T06:30:04.188521276Z 1987713 3221044   228252 1005079   Global   32000592
+2020-04-30T06:10:04.102715146Z 1990809 3221029   228252 1001968   Global   31999936
+2020-04-30T06:10:04.048873973Z 1157    1488      65     266       Bulgaria 45208
 
 ```
 
 ```
 name: rates
-time                           daily_rate death_pm death_rate region  time2double weekly_rate
-----                           ---------- -------- ---------- ------  ----------- -----------
-2020-04-20T17:55:14.159330486Z                                Global              0.71
-2020-04-20T17:55:13.390983368Z                                US                  0.63
-2020-04-20T17:55:12.634030322Z            55.89    3.2        Germany
-2020-04-20T17:55:12.530394013Z                                Germany             0.54
-2020-04-20T17:55:11Z                                          Global  16.7
+time                           daily_rate death_pm death_rate region  tested_confirmed tested_milion time2double weekly_rate
+----                           ---------- -------- ---------- ------  ---------------- ------------- ----------- -----------
+2020-04-30T06:40:07.501781257Z                                Global  10               4224
+2020-04-30T06:40:06.706798661Z                                Ukraine 11               2558
+2020-04-30T06:40:06.663917506Z            5.97     2.51       Ukraine
+2020-04-30T06:40:06.616333119Z                                Ukraine                                            0.16
+2020-04-30T06:40:03Z                                          Global                                 21.3
 ```
