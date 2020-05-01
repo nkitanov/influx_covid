@@ -69,12 +69,23 @@ def db_test_rate(country):
 
 
 def test_rate(country):
-    # Return dict like {'tested_milion': 19563.0, 'tested_confirmed': 5.0, 'country': 'Belgium'}
+    # Return dict like:
+    # {'tested_milion': 6694.0, 'tested_confirmed': 30.0, 
+    #  'projected_positives': 231615.0, 'projected_positives_percent': 3.33, 
+    #  'country': 'Bulgaria'}
     d = {}
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
     d["tested_milion"] = round((l[0]["last_tested"] / (population[country] / 1e6)), 0)
     d["tested_confirmed"] = round(l[0]["last_tested"] / db_current(country), 0)
+    if l[0]["last_tested"] > 0:
+        d["projected_positives"] = round(population[country] / d["tested_confirmed"], 0)
+        d["projected_positives_percent"] = round(
+            (d["projected_positives"] / population[country] * 100), 2
+        )
+    else:
+        d["projected_positives"] = 0
+        d["projected_positives_percent"] = 0
     d["country"] = country
     return d
 
@@ -205,6 +216,8 @@ for country in country_list:
                 "fields": {
                     "tested_milion": test_rate_dict["tested_milion"],
                     "tested_confirmed": test_rate_dict["tested_confirmed"],
+                    "projected_positives": test_rate_dict["projected_positives"],
+                    "projected_positives_percent": test_rate_dict["projected_positives_percent"]
                 },
             }
         ]
