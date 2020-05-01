@@ -13,7 +13,7 @@ There are two Influx measurements which holds the data - `data` and `rates`, her
 
 ```data,region=Belgium confirmed=1 recovered=1 active=1 deaths=1 tested=42343```
 
-```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05 death_pm=50.2 tested_milion=12034 tested_confirmed=10```
+```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05 death_pm=50.2 tested_milion=12034 tested_confirmed=10 projected_positives=324422 projected_positives_percent=3.23```
 
 ```
 name: data
@@ -29,11 +29,12 @@ time                           active  confirmed deaths recovered region   teste
 
 ```
 name: rates
-time                           daily_rate death_pm death_rate region  tested_confirmed tested_milion time2double weekly_rate
-----                           ---------- -------- ---------- ------  ---------------- ------------- ----------- -----------
-2020-04-30T06:40:07.501781257Z                                Global  10               4224
-2020-04-30T06:40:06.706798661Z                                Ukraine 11               2558
-2020-04-30T06:40:06.663917506Z            5.97     2.51       Ukraine
-2020-04-30T06:40:06.616333119Z                                Ukraine                                            0.16
-2020-04-30T06:40:03Z                                          Global                                 21.3
+time                           daily_rate death_pm death_rate projected_positives projected_positives_percent region  tested_confirmed tested_milion time2double weekly_rate
+----                           ---------- -------- ---------- ------------------- --------------------------- ------  ---------------- ------------- ----------- -----------
+2020-05-01T12:23:32.051675614Z                                4864482             3.33                        Russia  30               23915
+2020-05-01T12:23:31.303513195Z                                1282513             6.67                        Romania 15               9548
+2020-05-01T12:23:30.597704393Z                                873737              10                          Serbia  10               9802
+2020-05-01T12:23:29.896389538Z                                372252              3.57                        Greece  28               6920
+2020-05-01T12:23:29.200419255Z                                9371007             11.11                       Turkey  9                12255
+
 ```
