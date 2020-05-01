@@ -216,9 +216,10 @@ for country in country_list:
                 "fields": {
                     "tested_milion": test_rate_dict["tested_milion"],
                     "tested_confirmed": test_rate_dict["tested_confirmed"],
-                    "projected_positives": test_rate_dict["projected_positives"],
-                    "projected_positives_percent": test_rate_dict["projected_positives_percent"]
+                    "projected_positives": float(test_rate_dict["projected_positives"]),
+                    "projected_positives_percent": float(test_rate_dict["projected_positives_percent"])
                 },
             }
         ]
         client.write_points(json)
+    print(test_rate_dict)
