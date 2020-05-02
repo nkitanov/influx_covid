@@ -222,4 +222,3 @@ for country in country_list:
             }
         ]
         client.write_points(json)
-    print(test_rate_dict)
