@@ -2,8 +2,9 @@
 
 import sys
 from influxdb import InfluxDBClient
-from country_list import country_list, population
+from country_list import country_list
 from get_data import db_current
+from covid import Covid
 
 # Influx host is different if I run it from my Win PC
 if sys.platform == "linux":
@@ -12,6 +13,7 @@ else:
     influx_host = "35.207.86.81"
 
 client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
+covid = Covid(source="worldometers")
 
 
 def db_daily_rate(country):
@@ -47,13 +49,36 @@ def db_death_rate(country):
         return None
 
 
+def population(country):
+    population = 0
+
+    if country == "Global":
+        # Calculate Global population by iterating all countries
+        all_countries = covid.list_countries()
+        for country in all_countries:
+            population += covid.get_status_by_country_name(country)["population"]
+        return float(population)
+    else:
+        # Redefine country for UK and US because wordometers use UK and USA
+        # remove the if statement and change wcountry to 'country' argument in covid get statement
+        # for John Hopkins data
+        if country == "US":
+            wcountry = "USA"
+        elif country == "United Kingdom":
+            wcountry = "UK"
+        else:
+            wcountry = country
+        population = float(covid.get_status_by_country_name(wcountry)["population"])
+        return float(population)
+
+
 def death_rate(country):
     # Return dict like {'percent': 13.28, 'dpm': 237.09, 'country': 'United Kingdom'}
     d = {}
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
     d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
-    d["dpm"] = round(l[0]["last_deaths"] / (population[country] / 1e6), 2)
+    d["dpm"] = round(l[0]["last_deaths"] / (population(country) / 1e6), 2)
     d["country"] = country
     return d
 
@@ -74,14 +99,15 @@ def test_rate(country):
     #  'projected_positives': 231615.0, 'projected_positives_percent': 3.33,
     #  'country': 'Bulgaria'}
     d = {}
+
     q = client.query("select last(*) from data where region = '" + country + "'")
     l = list(q.get_points())
-    d["tested_milion"] = round((l[0]["last_tested"] / (population[country] / 1e6)), 0)
+    d["tested_milion"] = round((l[0]["last_tested"] / (population(country) / 1e6)), 0)
     d["tested_confirmed"] = round(l[0]["last_tested"] / db_current(country), 0)
     if l[0]["last_tested"] > 0:
-        d["projected_positives"] = round(population[country] / d["tested_confirmed"], 0)
+        d["projected_positives"] = round(population(country) / d["tested_confirmed"], 0)
         d["projected_positives_percent"] = round(
-            (d["projected_positives"] / population[country] * 100), 2
+            (d["projected_positives"] / population(country) * 100), 2
         )
     else:
         d["projected_positives"] = 0
