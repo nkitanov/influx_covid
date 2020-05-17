@@ -70,8 +70,8 @@ def db_test_rate(country):
 
 def test_rate(country):
     # Return dict like:
-    # {'tested_milion': 6694.0, 'tested_confirmed': 30.0, 
-    #  'projected_positives': 231615.0, 'projected_positives_percent': 3.33, 
+    # {'tested_milion': 6694.0, 'tested_confirmed': 30.0,
+    #  'projected_positives': 231615.0, 'projected_positives_percent': 3.33,
     #  'country': 'Bulgaria'}
     d = {}
     q = client.query("select last(*) from data where region = '" + country + "'")
@@ -141,6 +141,9 @@ def daily_rate(country):
         d["rate"] = round(
             lst[-1]["difference"], 2
         )  # If no new cases prev day "rate" = new day case
+    # Growth rate cannot be negative, if there is a daily negative correction keep growth rate at 0
+    if d["rate"] < 0:
+        d["rate"] = 0
     return d
 
 
@@ -159,7 +162,11 @@ def weekly_rate(country):
 # Iterate over countries and write db only on change
 for country in country_list:
     daily_rate_dict = daily_rate(country)
-    if db_daily_rate(country)["rate"] != daily_rate_dict["rate"]:
+    db_daily_rate_dict = db_daily_rate(country)
+    if (
+        db_daily_rate_dict["rate"] != daily_rate_dict["rate"]
+        or db_daily_rate_dict["time"] != daily_rate_dict["time"]
+    ):
         json = [
             {
                 "measurement": "rates",
@@ -217,7 +224,9 @@ for country in country_list:
                     "tested_milion": test_rate_dict["tested_milion"],
                     "tested_confirmed": test_rate_dict["tested_confirmed"],
                     "projected_positives": float(test_rate_dict["projected_positives"]),
-                    "projected_positives_percent": float(test_rate_dict["projected_positives_percent"])
+                    "projected_positives_percent": float(
+                        test_rate_dict["projected_positives_percent"]
+                    ),
                 },
             }
         ]
