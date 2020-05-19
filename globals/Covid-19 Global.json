@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1588335845744,
+  "iteration": 1589878601352,
   "links": [],
   "panels": [
     {
@@ -547,13 +547,22 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "Confirmed Average",
+          "bars": false,
+          "color": "#FF9830",
+          "fill": 0,
+          "lines": true,
+          "linewidth": 3
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Confirmed",
+          "alias": "Confirmed Average",
           "groupBy": [
             {
               "params": [
@@ -589,6 +598,12 @@
               {
                 "params": [],
                 "type": "difference"
+              },
+              {
+                "params": [
+                  "2"
+                ],
+                "type": "moving_average"
               }
             ]
           ],
@@ -646,10 +661,58 @@
               "value": "/^$region$/"
             }
           ]
+        },
+        {
+          "alias": "Confirmed",
+          "groupBy": [
+            {
+              "params": [
+                "1w"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "confirmed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [],
+                "type": "difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
         }
       ],
       "thresholds": [],
-      "timeFrom": "12w",
+      "timeFrom": "16w",
       "timeRegions": [],
       "timeShift": null,
       "title": "New cases by week $region",
@@ -807,7 +870,7 @@
           "yaxis": "left"
         }
       ],
-      "timeFrom": "12w",
+      "timeFrom": "16w",
       "timeRegions": [],
       "timeShift": null,
       "title": "Weekly growth factor $region",
@@ -1047,7 +1110,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Days to Double",
+          "alias": "Days to Double (moving average 10)",
           "groupBy": [
             {
               "params": [
@@ -1078,6 +1141,12 @@
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  "10"
+                ],
+                "type": "moving_average"
               }
             ]
           ],
@@ -2420,7 +2489,7 @@
         "#37872D"
       ],
       "datasource": "covid_global",
-      "format": "none",
+      "format": "short",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -2545,7 +2614,7 @@
       ],
       "datasource": "covid_global",
       "decimals": null,
-      "format": "none",
+      "format": "short",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -3400,6 +3469,130 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Projected positives",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#37872D",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "datasource": "covid_global",
+      "decimals": null,
+      "description": "Total population of country or region",
+      "format": "short",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 2,
+        "y": 30
+      },
+      "id": 70,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "population"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Population",
       "type": "singlestat",
       "valueFontSize": "50%",
       "valueMaps": [
@@ -6900,6 +7093,7 @@
           ],
           "defaults": {
             "mappings": [],
+            "max": 40,
             "thresholds": {
               "mode": "absolute",
               "steps": [
@@ -7857,8 +8051,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "France",
-          "value": "France"
+          "text": "Germany",
+          "value": "Germany"
         },
         "hide": 0,
         "includeAll": false,
@@ -7882,12 +8076,12 @@
             "value": "Bulgaria"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Germany",
             "value": "Germany"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "France",
             "value": "France"
           },
@@ -8000,5 +8194,5 @@
   "timezone": "",
   "title": "Covid-19 Global",
   "uid": "covid-global",
-  "version": 66
+  "version": 73
 }

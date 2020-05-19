@@ -11,30 +11,30 @@ Backend calculations and update scripts for https://covid.rally-club.bg/d/covid-
 
 There are two Influx measurements which holds the data - `data` and `rates`, here are the schemas in influx line protocol example, **region is a tag key**:
 
-```data,region=Belgium confirmed=1 recovered=1 active=1 deaths=1 tested=42343```
+```data,region=Belgium confirmed=1 recovered=1 active=1 deaths=1 tested=42343, population=11583739```
 
 ```rates,region=Belgium daily_rate=0.5 weekly_rate=0.5 time2double=10.2 death_rate=0.05 death_pm=50.2 tested_milion=12034 tested_confirmed=10 projected_positives=324422 projected_positives_percent=3.23```
 
 ```
 name: data
-time                           active  confirmed deaths recovered region   tested
-----                           ------  --------- ------ --------- ------   ------
-2020-04-30T06:40:03.663807311Z 1988125 3221617   228263 1005229   Global   32019440
-2020-04-30T06:40:03.626811538Z 8907    10406     261    1238      Ukraine  111859
-2020-04-30T06:30:04.188521276Z 1987713 3221044   228252 1005079   Global   32000592
-2020-04-30T06:10:04.102715146Z 1990809 3221029   228252 1001968   Global   31999936
-2020-04-30T06:10:04.048873973Z 1157    1488      65     266       Bulgaria 45208
+time       active  confirmed deaths population recovered region  tested
+----       ------  --------- ------ ---------- --------- ------  ------
+1589878203 2669945 4907135   320392            1916798   Global  61397076
+1589877795 220974  299941    2837   145927292  76130     Russia  7352316
+1589877794 5982    17036     1124   19251921   9930      Romania 313621
+1589877794 5669    10699     231    8741321    4799      Serbia  185385
+1589877794 1297    2836      165    10428746   1374      Greece  131684
 
 ```
 
 ```
 name: rates
-time                           daily_rate death_pm death_rate projected_positives projected_positives_percent region  tested_confirmed tested_milion time2double weekly_rate
-----                           ---------- -------- ---------- ------------------- --------------------------- ------  ---------------- ------------- ----------- -----------
-2020-05-01T12:23:32.051675614Z                                4864482             3.33                        Russia  30               23915
-2020-05-01T12:23:31.303513195Z                                1282513             6.67                        Romania 15               9548
-2020-05-01T12:23:30.597704393Z                                873737              10                          Serbia  10               9802
-2020-05-01T12:23:29.896389538Z                                372252              3.57                        Greece  28               6920
-2020-05-01T12:23:29.200419255Z                                9371007             11.11                       Turkey  9                12255
+time       daily_rate death_pm death_rate projected_positives projected_positives_percent region      tested_confirmed tested_milion time2double weekly_rate
+----       ---------- -------- ---------- ------------------- --------------------------- ------      ---------------- ------------- ----------- -----------
+1589878209            58.38    6.6                                                        Romania
+1589878208                                596058055           7.69                        Global      13               7923
+1589878208                                2447213             14.29                       Netherlands 7                17358
+1589878208            218.11   6.16                                                       Switzerland
+1589877794                                                                                Turkey                                     33.4
 
 ```
