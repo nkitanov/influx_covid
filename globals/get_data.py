@@ -16,6 +16,7 @@ covid = Covid(source="worldometers")
 
 d = {}
 global_tests = 0
+global_population = 0
 
 
 def db_current(country):
@@ -28,6 +29,7 @@ def db_current(country):
 all_countries = covid.list_countries()
 for country in all_countries:
     global_tests += covid.get_status_by_country_name(country)["total_tests"]
+    global_population += covid.get_status_by_country_name(country)["population"]
 
 # Get globals as they cannot be queried by county from covid library
 d["Global"] = {
@@ -36,8 +38,8 @@ d["Global"] = {
     "active": covid.get_total_active_cases(),
     "deaths": covid.get_total_deaths(),
     "total_tests": global_tests,
+    "population": global_population,
 }
-
 
 for country in country_list:
     if country != "Global":
@@ -61,6 +63,7 @@ for country in country_list:
                 "active": d[country]["active"],
                 "deaths": d[country]["deaths"],
                 "tested": d[country]["total_tests"],
+                "population": int(d[country]["population"])
             },
         }
     ]
