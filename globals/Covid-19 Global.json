@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1589878601352,
+  "iteration": 1589962880084,
   "links": [],
   "panels": [
     {
@@ -549,7 +549,7 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Confirmed Average",
+          "alias": "Confirmed Average (moving 2)",
           "bars": false,
           "color": "#FF9830",
           "fill": 0,
@@ -562,7 +562,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Confirmed Average",
+          "alias": "Confirmed Average (moving 2)",
           "groupBy": [
             {
               "params": [
@@ -604,53 +604,6 @@
                   "2"
                 ],
                 "type": "moving_average"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "region",
-              "operator": "=~",
-              "value": "/^$region$/"
-            }
-          ]
-        },
-        {
-          "alias": "Deaths",
-          "groupBy": [
-            {
-              "params": [
-                "1w"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "data",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "deaths"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [],
-                "type": "difference"
               }
             ]
           ],
@@ -709,10 +662,58 @@
               "value": "/^$region$/"
             }
           ]
+        },
+        {
+          "alias": "Deaths",
+          "groupBy": [
+            {
+              "params": [
+                "1w"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "deaths"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [],
+                "type": "difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
         }
       ],
       "thresholds": [],
-      "timeFrom": "16w",
+      "timeFrom": "3M",
       "timeRegions": [],
       "timeShift": null,
       "title": "New cases by week $region",
@@ -756,6 +757,7 @@
     {
       "aliasColors": {
         "Rate": "semi-dark-blue",
+        "Weekly growth rate": "semi-dark-blue",
         "covid_weekly.last": "semi-dark-blue",
         "Седмична разлика": "rgb(103, 47, 117)"
       },
@@ -763,6 +765,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "covid_global",
+      "decimals": 2,
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -776,16 +779,16 @@
       "hideTimeOverride": false,
       "id": 37,
       "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
         "hideEmpty": false,
         "hideZero": false,
-        "max": false,
-        "min": false,
-        "show": false,
+        "max": true,
+        "min": true,
+        "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": false,
       "linewidth": 1,
@@ -803,18 +806,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "Седмична разлика",
-          "color": "#3274D9"
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Rate",
+          "alias": "Weekly growth rate",
           "groupBy": [
             {
               "params": [
@@ -870,7 +868,7 @@
           "yaxis": "left"
         }
       ],
-      "timeFrom": "16w",
+      "timeFrom": "3M",
       "timeRegions": [],
       "timeShift": null,
       "title": "Weekly growth factor $region",
@@ -893,7 +891,7 @@
           "format": "short",
           "label": "",
           "logBase": 1,
-          "max": "6",
+          "max": "3",
           "min": null,
           "show": true
         },
@@ -936,7 +934,7 @@
       "legend": {
         "alignAsTable": true,
         "avg": true,
-        "current": false,
+        "current": true,
         "hideEmpty": false,
         "max": true,
         "min": true,
@@ -1087,7 +1085,7 @@
       "legend": {
         "alignAsTable": true,
         "avg": true,
-        "current": false,
+        "current": true,
         "max": true,
         "min": true,
         "show": true,
@@ -1160,7 +1158,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "3M",
       "timeRegions": [],
       "timeShift": null,
       "title": "Time to Double $region",
@@ -1183,7 +1181,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1225,7 +1223,7 @@
       "description": "",
       "fontSize": "100%",
       "gridPos": {
-        "h": 14,
+        "h": 18,
         "w": 11,
         "x": 6,
         "y": 20
@@ -1644,7 +1642,7 @@
       "description": "Between Thursday and Thursday",
       "fontSize": "100%",
       "gridPos": {
-        "h": 14,
+        "h": 18,
         "w": 7,
         "x": 17,
         "y": 20
@@ -4237,12 +4235,424 @@
       "type": "table"
     },
     {
+      "aliasColors": {
+        "Daily Confirmed": "red",
+        "Daily Growth Factor": "light-green",
+        "Daily Infected": "red",
+        "Daily tested": "light-green",
+        "Daily tested  (moving average 2)": "semi-dark-orange",
+        "Growth Factor": "blue",
+        "Дневен Growth Factor": "blue"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "covid_global",
+      "description": "NOTE: Some countries are reporting tested not on a regular interval, like Germany approx 1 time per week and this graph is meaningless! Both lines represent moving average  by 3 days to smooth  daily inconsistencies like skipping a day of reporting tested numbers.",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 14,
+        "x": 0,
+        "y": 38
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 71,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Daily tested",
+          "bars": false,
+          "lines": true
+        },
+        {
+          "alias": "Daily Confirmed",
+          "bars": false,
+          "fill": 0,
+          "lines": true,
+          "linewidth": 2,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Daily tested",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "tested"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [],
+                "type": "difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
+        },
+        {
+          "alias": "Daily Confirmed",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT moving_average(difference(last(\"confirmed\")), 3) FROM \"data\" WHERE (\"region\" =~ /^$region$/) AND $timeFilter GROUP BY time(1d) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "confirmed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [],
+                "type": "difference"
+              },
+              {
+                "params": [
+                  "3"
+                ],
+                "type": "moving_average"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
+        },
+        {
+          "alias": "Daily tested",
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "tested"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [],
+                "type": "difference"
+              },
+              {
+                "params": [
+                  "3"
+                ],
+                "type": "moving_average"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Daily Tested/Confirmed  $region moving average 3 day",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 1,
+          "format": "short",
+          "label": "Tested",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": 1,
+          "format": "short",
+          "label": "Confirmed",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Daily Confirmed": "red",
+        "Daily Growth Factor": "light-green",
+        "Daily Infected": "red",
+        "Daily tested": "light-green",
+        "Daily tested  (moving average 2)": "semi-dark-orange",
+        "Growth Factor": "blue",
+        "Дневен Growth Factor": "blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "covid_global",
+      "description": "Based on 3 days moving average",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 14,
+        "y": 38
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 72,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "% Confirmed/Tested",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "data",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT moving_average(difference(last(confirmed)), 3) / moving_average(difference(last(tested)), 3) FROM \"data\" WHERE (\"region\" =~ /^$region$/) AND $timeFilter GROUP BY time(1d) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "region",
+              "operator": "=~",
+              "value": "/^$region$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Daily ratio in percent confirmed vs tested $region",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 1,
+          "format": "percentunit",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": 1,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "datasource": "covid_global",
       "gridPos": {
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 47
       },
       "id": 61,
       "options": {
@@ -5191,7 +5601,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 56
       },
       "id": 65,
       "options": {
@@ -6136,7 +6546,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 65
       },
       "id": 66,
       "options": {
@@ -7082,7 +7492,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 65
+        "y": 74
       },
       "id": 69,
       "options": {
@@ -8030,7 +8440,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 74
+        "y": 83
       },
       "id": 22,
       "mode": "markdown",
@@ -8051,8 +8461,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "Germany",
-          "value": "Germany"
+          "text": "Bulgaria",
+          "value": "Bulgaria"
         },
         "hide": 0,
         "includeAll": false,
@@ -8071,12 +8481,12 @@
             "value": "Belgium"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Bulgaria",
             "value": "Bulgaria"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "Germany",
             "value": "Germany"
           },
@@ -8194,5 +8604,5 @@
   "timezone": "",
   "title": "Covid-19 Global",
   "uid": "covid-global",
-  "version": 73
+  "version": 84
 }
