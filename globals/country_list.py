@@ -19,5 +19,6 @@ country_list = [
     "Greece",
     "Serbia",
     "Romania",
-    "Russia"
+    "Russia",
+    "Brazil"
 ]
