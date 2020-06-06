@@ -3,7 +3,7 @@
 import sys
 from covid import Covid
 from influxdb import InfluxDBClient
-from country_list import country_list
+from country_list import country_list, continents_dictionary
 
 # Influx host is different if I run it from my Win PC
 if sys.platform == "linux":
@@ -22,7 +22,10 @@ global_population = 0
 def db_current(country):
     q = client.query("select last(confirmed) from data where region='" + country + "'")
     lst = list(q.get_points())
-    return lst[-1]["last"]
+    try:
+        return lst[-1]["last"]
+    except IndexError:
+        return 0
 
 
 # Calculate Global tests by iterating all countries
@@ -41,6 +44,36 @@ d["Global"] = {
     "population": global_population,
 }
 
+# Calculate per continent values as defined in continents_dictionary
+continents = [continent for continent in continents_dictionary]
+
+for continent in continents:
+    country_list_cont = continents_dictionary[continent]
+    confirmed = 0
+    recovered = 0
+    active = 0
+    deaths = 0
+    tested = 0
+    population = 0
+
+    for country in country_list_cont:
+        d[country] = covid.get_status_by_country_name(country)
+        confirmed += d[country]["confirmed"]
+        recovered += d[country]["recovered"]
+        active += d[country]["active"]
+        deaths += d[country]["deaths"]
+        tested += d[country]["total_tests"]
+        population += d[country]["population"]
+
+    d[continent] = {}
+    d[continent]["confirmed"] = confirmed
+    d[continent]["recovered"] = recovered
+    d[continent]["active"] = active
+    d[continent]["deaths"] = deaths
+    d[continent]["total_tests"] = tested
+    d[continent]["population"] = population
+
+
 for country in country_list:
     if country != "Global":
         # Redefine country for UK and US because wordometers use UK and USA
@@ -52,7 +85,8 @@ for country in country_list:
             wcountry = "UK"
         else:
             wcountry = country
-        d[country] = covid.get_status_by_country_name(wcountry)
+        if country not in continents:
+            d[country] = covid.get_status_by_country_name(wcountry)
     json = [
         {
             "measurement": "data",
@@ -63,7 +97,7 @@ for country in country_list:
                 "active": d[country]["active"],
                 "deaths": d[country]["deaths"],
                 "tested": d[country]["total_tests"],
-                "population": int(d[country]["population"])
+                "population": int(d[country]["population"]),
             },
         }
     ]

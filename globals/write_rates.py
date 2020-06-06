@@ -23,8 +23,12 @@ def db_daily_rate(country):
         "select last(daily_rate) from rates where region='" + country + "'"
     )
     l = list(q.get_points())
-    d["time"] = l[0]["time"]
-    d["rate"] = l[0]["last"]
+    if len(l) > 1:
+        d["time"] = l[0]["time"]
+        d["rate"] = l[0]["last"]
+    else:
+        d["time"] = 0
+        d["rate"] = 0
     return d
 
 
@@ -34,7 +38,10 @@ def db_weekly_rate(country):
         "select last(weekly_rate) from rates where region='" + country + "'"
     )
     l = list(q.get_points())
-    return l[0]["last"]
+    if len(l) > 1:
+        return l[0]["last"]
+    else:
+        return 0
 
 
 def db_death_rate(country):
@@ -59,17 +66,19 @@ def population(country):
             population += covid.get_status_by_country_name(country)["population"]
         return float(population)
     else:
-        # Redefine country for UK and US because wordometers use UK and USA
-        # remove the if statement and change wcountry to 'country' argument in covid get statement
-        # for John Hopkins data
+        # # Redefine country for UK and US because wordometers use UK and USA
+        # # remove the if statement and change wcountry to 'country' argument in covid get statement
+        # # for John Hopkins data
         if country == "US":
             wcountry = "USA"
         elif country == "United Kingdom":
             wcountry = "UK"
         else:
             wcountry = country
-        population = float(covid.get_status_by_country_name(wcountry)["population"])
-        return float(population)
+        q = client.query("select last(population) from data where region = '" + country + "'")
+        l = list(q.get_points())
+        population = float(l[0]["last"])
+        return population
 
 
 def death_rate(country):
@@ -125,7 +134,10 @@ def db_timedouble(country):
         "select last(time2double) from rates where region='" + country + "'", epoch="s"
     )
     l = list(q.get_points())
-    return l[0]["last"]
+    if len(l) > 1:
+        return l[0]["last"]
+    else:
+        return 0
 
 
 def timedouble(country):
@@ -146,8 +158,11 @@ def timedouble(country):
         epoch="s",
     )
     l = list(q.get_points())
-    timel = l[0]["time"]
-    days = round((timeh - timel) / 86400, 1)
+    try:
+        timel = l[0]["time"]
+        days = round((timeh - timel) / 86400, 1)
+    except IndexError:
+        days = -1.0
     d["time"] = timeh
     d["time2double"] = days
     d["region"] = country
@@ -163,13 +178,18 @@ def daily_rate(country):
         + "' and time > 1579651200 group by time(1d) fill(none)"
     )
     lst = list(q.get_points())
-    d["time"] = lst[-1]["time"]
+    try:
+        d["time"] = lst[-1]["time"]
+    except IndexError:
+        d["time"] = 0
     try:
         d["rate"] = round(lst[-1]["difference"] / lst[-2]["difference"], 2)
     except ZeroDivisionError:
         d["rate"] = round(
             lst[-1]["difference"], 2
         )  # If no new cases prev day "rate" = new day case
+    except IndexError:
+        d["rate"] = 0
     # Growth rate cannot be negative, if there is a daily negative correction keep growth rate at 0
     if d["rate"] < 0:
         d["rate"] = 0
@@ -184,7 +204,10 @@ def weekly_rate(country):
         + "' and time > 1579651200 group by time(1w) fill(none)"
     )
     lst = list(q.get_points())
-    rate = round(lst[-1]["difference"] / lst[-2]["difference"], 2)
+    try:
+        rate = round(lst[-1]["difference"] / lst[-2]["difference"], 2)
+    except IndexError:
+        rate = 0
     return float(rate)
 
 
