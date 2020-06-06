@@ -90,7 +90,10 @@ def db_test_rate(country):
         epoch="s",
     )
     l = list(q.get_points())
-    return l[0]["last"]
+    try:
+        return l[0]["last"]
+    except IndexError:
+        return 0
 
 
 def test_rate(country):
