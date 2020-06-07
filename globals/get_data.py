@@ -28,80 +28,80 @@ def db_current(country):
         return 0
 
 
-# Calculate Global tests by iterating all countries
-all_countries = covid.list_countries()
-for country in all_countries:
-    global_tests += covid.get_status_by_country_name(country)["total_tests"]
-    global_population += covid.get_status_by_country_name(country)["population"]
+if __name__ == "__main__":
+    # Calculate Global tests by iterating all countries
+    all_countries = covid.list_countries()
+    for country in all_countries:
+        global_tests += covid.get_status_by_country_name(country)["total_tests"]
+        global_population += covid.get_status_by_country_name(country)["population"]
 
-# Get globals as they cannot be queried by county from covid library
-d["Global"] = {
-    "confirmed": covid.get_total_confirmed_cases(),
-    "recovered": covid.get_total_recovered(),
-    "active": covid.get_total_active_cases(),
-    "deaths": covid.get_total_deaths(),
-    "total_tests": global_tests,
-    "population": global_population,
-}
+    # Get globals as they cannot be queried by county from covid library
+    d["Global"] = {
+        "confirmed": covid.get_total_confirmed_cases(),
+        "recovered": covid.get_total_recovered(),
+        "active": covid.get_total_active_cases(),
+        "deaths": covid.get_total_deaths(),
+        "total_tests": global_tests,
+        "population": global_population,
+    }
 
-# Calculate per continent values as defined in continents_dictionary
-continents = [continent for continent in continents_dictionary]
+    # Calculate per continent values as defined in continents_dictionary
+    continents = [continent for continent in continents_dictionary]
 
-for continent in continents:
-    country_list_cont = continents_dictionary[continent]
-    confirmed = 0
-    recovered = 0
-    active = 0
-    deaths = 0
-    tested = 0
-    population = 0
+    for continent in continents:
+        country_list_cont = continents_dictionary[continent]
+        confirmed = 0
+        recovered = 0
+        active = 0
+        deaths = 0
+        tested = 0
+        population = 0
 
-    for country in country_list_cont:
-        d[country] = covid.get_status_by_country_name(country)
-        confirmed += d[country]["confirmed"]
-        recovered += d[country]["recovered"]
-        active += d[country]["active"]
-        deaths += d[country]["deaths"]
-        tested += d[country]["total_tests"]
-        population += d[country]["population"]
+        for country in country_list_cont:
+            d[country] = covid.get_status_by_country_name(country)
+            confirmed += d[country]["confirmed"]
+            recovered += d[country]["recovered"]
+            active += d[country]["active"]
+            deaths += d[country]["deaths"]
+            tested += d[country]["total_tests"]
+            population += d[country]["population"]
 
-    d[continent] = {}
-    d[continent]["confirmed"] = confirmed
-    d[continent]["recovered"] = recovered
-    d[continent]["active"] = active
-    d[continent]["deaths"] = deaths
-    d[continent]["total_tests"] = tested
-    d[continent]["population"] = population
+        d[continent] = {}
+        d[continent]["confirmed"] = confirmed
+        d[continent]["recovered"] = recovered
+        d[continent]["active"] = active
+        d[continent]["deaths"] = deaths
+        d[continent]["total_tests"] = tested
+        d[continent]["population"] = population
 
+    for country in country_list:
+        if country != "Global":
+            # Redefine country for UK and US because wordometers use UK and USA
+            # remove the if statement and change wcountry to 'country' argument in covid get statement
+            # for John Hopkins data
+            if country == "US":
+                wcountry = "USA"
+            elif country == "United Kingdom":
+                wcountry = "UK"
+            else:
+                wcountry = country
+            if country not in continents:
+                d[country] = covid.get_status_by_country_name(wcountry)
+        json = [
+            {
+                "measurement": "data",
+                "tags": {"region": country},
+                "fields": {
+                    "confirmed": d[country]["confirmed"],
+                    "recovered": d[country]["recovered"],
+                    "active": d[country]["active"],
+                    "deaths": d[country]["deaths"],
+                    "tested": d[country]["total_tests"],
+                    "population": int(d[country]["population"]),
+                },
+            }
+        ]
 
-for country in country_list:
-    if country != "Global":
-        # Redefine country for UK and US because wordometers use UK and USA
-        # remove the if statement and change wcountry to 'country' argument in covid get statement
-        # for John Hopkins data
-        if country == "US":
-            wcountry = "USA"
-        elif country == "United Kingdom":
-            wcountry = "UK"
-        else:
-            wcountry = country
-        if country not in continents:
-            d[country] = covid.get_status_by_country_name(wcountry)
-    json = [
-        {
-            "measurement": "data",
-            "tags": {"region": country},
-            "fields": {
-                "confirmed": d[country]["confirmed"],
-                "recovered": d[country]["recovered"],
-                "active": d[country]["active"],
-                "deaths": d[country]["deaths"],
-                "tested": d[country]["total_tests"],
-                "population": int(d[country]["population"]),
-            },
-        }
-    ]
-
-    # Update db only if there is change in confirmed
-    if d[country]["confirmed"] != db_current(country):
-        client.write_points(json)
+        # Update db only if there is change in confirmed
+        if d[country]["confirmed"] != db_current(country):
+            client.write_points(json)
