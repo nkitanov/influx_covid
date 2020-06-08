@@ -2,10 +2,10 @@
 
 from influxdb import InfluxDBClient
 
-client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
+client = InfluxDBClient(host="35.207.86.81", port=8086, database="covid_global")
 
 # Control manually list of countries to import (don't import from country_list)
-country_list = ["Turkey", "Greece", "Serbia", "Romania"]
+country_list = ["Europe", "North America", "South America", "Asia", "Africa"]
 
 
 def db_current_daily(country):
