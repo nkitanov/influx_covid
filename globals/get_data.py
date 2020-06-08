@@ -4,6 +4,7 @@ import sys
 from covid import Covid
 from influxdb import InfluxDBClient
 from country_list import country_list, continents_dictionary
+from datetime import datetime
 
 # Influx host is different if I run it from my Win PC
 if sys.platform == "linux":
@@ -17,6 +18,7 @@ covid = Covid(source="worldometers")
 d = {}
 global_tests = 0
 global_population = 0
+utc_hour = int(datetime.utcnow().strftime('%H'))
 
 
 def db_current(country):
@@ -104,4 +106,9 @@ if __name__ == "__main__":
 
         # Update db only if there is change in confirmed
         if d[country]["confirmed"] != db_current(country):
-            client.write_points(json)
+            # For Bulgaria do not update between 00 and 3AM local as it aggregates for 
+            # the previous day (they update at 1-2 AM usually) since influx uses UTC
+            if country != "Bulgaria":
+                client.write_points(json)
+            elif utc_hour < 21:
+                client.write_points(json)

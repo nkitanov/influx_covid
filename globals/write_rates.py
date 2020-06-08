@@ -66,15 +66,6 @@ def population(country):
             population += covid.get_status_by_country_name(country)["population"]
         return float(population)
     else:
-        # # Redefine country for UK and US because wordometers use UK and USA
-        # # remove the if statement and change wcountry to 'country' argument in covid get statement
-        # # for John Hopkins data
-        if country == "US":
-            wcountry = "USA"
-        elif country == "United Kingdom":
-            wcountry = "UK"
-        else:
-            wcountry = country
         q = client.query("select last(population) from data where region = '" + country + "'")
         l = list(q.get_points())
         population = float(l[0]["last"])
