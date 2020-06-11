@@ -7,13 +7,13 @@ import os
 from datetime import datetime
 from influxdb import InfluxDBClient
 
-client = InfluxDBClient(host="192.168.1.201", port=8086, database="covid_global")
+client = InfluxDBClient(host="35.207.86.81", port=8086, database="covid_global")
 
 # Path to csv files
 path = "C:/Users/nki/git/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
 
 # Control manually list of countries to import (don't import from country_list)
-country_list = ["Turkey", "Greece", "Serbia", "Romania"]
+country_list = ["Morocco"]
 
 
 def date_convert(csv_date):

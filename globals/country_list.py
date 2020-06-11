@@ -29,6 +29,7 @@ country_list = [
     "South America",
     "Africa",
     "Oceania",
+    "Morocco"
 ]
 
 continents_dictionary = {
