@@ -21,6 +21,14 @@ global_population = 0
 utc_hour = int(datetime.utcnow().strftime('%H'))
 
 
+def db_tested(country):
+    q = client.query("select last(tested) from data where region='" + country + "'")
+    lst = list(q.get_points())
+    try:
+        return lst[-1]["last"]
+    except IndexError:
+        return 0
+
 def db_current(country):
     q = client.query("select last(confirmed) from data where region='" + country + "'")
     lst = list(q.get_points())
@@ -108,6 +116,22 @@ if __name__ == "__main__":
         if d[country]["confirmed"] != db_current(country):
             # For Bulgaria do not update between 00 and 3AM local as it aggregates for 
             # the previous day (they update at 1-2 AM usually) since influx uses UTC
+            if country != "Bulgaria":
+                client.write_points(json)
+            elif utc_hour < 21:
+                client.write_points(json)
+
+        # Update also tests if they are not updated together with confirmed
+        if d[country]["total_tests"] != db_tested(country):
+            json = [
+                {
+                    "measurement": "data",
+                    "tags": {"region": country},
+                    "fields": {
+                        "tested": d[country]["total_tests"],
+                    },
+                }
+            ]
             if country != "Bulgaria":
                 client.write_points(json)
             elif utc_hour < 21:
