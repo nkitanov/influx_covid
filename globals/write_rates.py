@@ -38,7 +38,7 @@ def db_weekly_rate(country):
         "select last(weekly_rate) from rates where region='" + country + "'"
     )
     l = list(q.get_points())
-    if len(l) > 1:
+    if len(l) >= 1:
         return l[0]["last"]
     else:
         return 0
