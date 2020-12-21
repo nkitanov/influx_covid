@@ -2,7 +2,6 @@
 
 import requests
 import json
-import datetime
 from influx_connection import client
 
 # Get data from API of https://data.egov.bg/data/resourceView/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8
@@ -10,15 +9,10 @@ url = "https://data.egov.bg/api/getResourceData"
 json_params = {"resource_uri": "8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8"}
 r = requests.post(url, data=json_params)
 data = json.loads(r.text)
-today_month = datetime.datetime.now().month
 
-# Generate json body with influx data
-for day in data["data"][1:]:
+# Generate json body with influx data for the last 1w only
+for day in data["data"][-7:]:
     time = day[0].replace("/", "-") + "T00:00:00Z"  # Time in influx format
-    month = int(day[0].split("/")[1])
-    # Push only current month values to speed up (comment this if to upload all)
-    if today_month != month:
-        continue
     json = [
         {
             "measurement": "bg_age_groups",
