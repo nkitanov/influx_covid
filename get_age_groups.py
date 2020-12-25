@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import requests
-import json
 from influx_connection import client
 
 # Until 31.12.2019 per 100k
@@ -22,7 +21,7 @@ population_data = {
 url = "https://data.egov.bg/api/getResourceData"
 json_params = {"resource_uri": "8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8"}
 r = requests.post(url, data=json_params)
-data = json.loads(r.text)
+data = r.json()
 
 # Generate json body with influx data for the last 1w only
 for day in data["data"][-7:]:
