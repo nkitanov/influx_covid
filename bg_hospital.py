@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from bs4 import BeautifulSoup
 from influxdb import InfluxDBClient
 from datetime import datetime
@@ -26,9 +25,9 @@ stats = soup.find(
 
 def pull_stats(what):
     if what == "hospitalized":
-        return int(stats.find_all("p")[8].text)
+        return int(stats.find_all("p")[12].text)
     elif what == "in_icu":
-        return int(stats.find_all("p")[10].text)
+        return int(stats.find_all("p")[14].text)
 
 
 def db_stats(what):
