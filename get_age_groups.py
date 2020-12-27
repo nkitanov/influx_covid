@@ -49,4 +49,5 @@ for day in data[-7:]:
         }
     ]
     # Write in influx
-    client.write_points(json)
+    #client.write_points(json)
+    print(json)
