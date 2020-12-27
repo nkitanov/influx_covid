@@ -39,13 +39,9 @@ population_yaml = """
 """
 
 opendata = Opendata("cb5d7df0-3066-4d7a-b4a1-ac26525e0f0c")
-full_data = opendata.data()
-
 population_data = yaml.safe_load(population_yaml)
-region_list = []
-
 today = date.today().strftime("%Y/%m/%d")
-
+region_list = []
 
 # Leave only ALL columns excluding active
 for town in opendata.columns():
