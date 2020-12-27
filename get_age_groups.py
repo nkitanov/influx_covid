@@ -2,6 +2,7 @@
 
 import requests
 from influx_connection import client
+from opendata import Opendata
 
 # Until 31.12.2019 per 100k
 population_data = {
@@ -17,14 +18,12 @@ population_data = {
     "90+": 36602 / 100000,
 }
 
-# Get data from API of https://data.egov.bg/data/resourceView/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8
-url = "https://data.egov.bg/api/getResourceData"
-json_params = {"resource_uri": "8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8"}
-r = requests.post(url, data=json_params)
-data = r.json()
+# Get data from API
+opendata = Opendata("8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8")
+data = opendata.data()
 
 # Generate json body with influx data for the last 1w only
-for day in data["data"][-7:]:
+for day in data[-7:]:
     time = day[0].replace("/", "-") + "T00:00:00Z"  # Time in influx format
     total = 0
     
