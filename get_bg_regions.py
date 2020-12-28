@@ -8,34 +8,90 @@ import yaml
 
 # Население към 31.12.2019
 population_yaml = """
-    BLG_ALL: 302694
-    BGS_ALL: 409265
-    VAR_ALL: 469885
-    VTR_ALL: 232568
-    VID_ALL: 82835
-    VRC_ALL: 159470
-    GAB_ALL: 106598
-    DOB_ALL: 171809
-    KRZ_ALL: 158204
-    KNL_ALL: 116915
-    LOV_ALL: 122546
-    MON_ALL: 127001
-    PAZ_ALL: 252776
-    PER_ALL: 119190
-    PVN_ALL: 236305
-    PDV_ALL: 666801
-    RAZ_ALL: 110789
-    RSE_ALL: 215477
-    SLS_ALL: 108018
-    SLV_ALL: 184119
-    SML_ALL: 103532
-    SFO_ALL: 226671
-    SOF_ALL: 1328790
-    SZR_ALL: 313396
-    TGV_ALL: 110914
-    HKV_ALL: 225317
-    SHU_ALL: 172262
-    JAM_ALL: 117335
+    BLG_ALL: 
+        population: 302694
+        name: Blagoevgrad
+    BGS_ALL:
+        population: 409265
+        name: Burgas
+    VAR_ALL: 
+        population: 469885
+        name: Varna
+    VTR_ALL:
+        population: 232568
+        name: Veliko Tarnovo
+    VID_ALL:
+        population: 82835
+        name: Vidin
+    VRC_ALL: 
+        population: 159470
+        name: Vratsa
+    GAB_ALL:
+        population: 106598
+        name: Gabrovo
+    DOB_ALL:
+        population: 171809
+        name: Dobrich
+    KRZ_ALL:
+        population: 158204
+        name: Kardzhali
+    KNL_ALL:
+        population: 116915
+        name: Kazanlak
+    LOV_ALL:
+        population: 122546
+        name: Lovech
+    MON_ALL:
+        population: 127001
+        name: Montana
+    PAZ_ALL:
+        population: 252776
+        name: Pazardzhik
+    PER_ALL:
+        population: 119190
+        name: Pernik
+    PVN_ALL:
+        population: 236305
+        name: Pleven
+    PDV_ALL:
+        population: 666801
+        name: Plovdiv
+    RAZ_ALL:
+        population: 110789
+        name: Razgrad
+    RSE_ALL:
+        population: 215477
+        name: Ruse
+    SLS_ALL:
+        population: 108018
+        name: Silistra
+    SLV_ALL:
+        population: 184119
+        name: Sliven
+    SML_ALL:
+        population: 103532
+        name: Smolyan
+    SFO_ALL:
+        population: 226671
+        name: Sofia-obl
+    SOF_ALL:
+        population: 1328790
+        name: Sofia-town
+    SZR_ALL:
+        population: 313396
+        name: Stara Zagora
+    TGV_ALL:
+        population: 110914
+        name: Targovishte
+    HKV_ALL:
+        population: 225317
+        name: Haskovo
+    SHU_ALL:
+        population: 172262
+        name: Shumen
+    JAM_ALL:
+        population: 117335
+        name: Yambol
 """
 
 opendata = Opendata("cb5d7df0-3066-4d7a-b4a1-ac26525e0f0c")
@@ -57,8 +113,8 @@ for town in region_list:
                 "measurement": "bg_regions",
                 "time": time,
                 "fields": {
-                    town.split("_")[0]: round(
-                        int(data_dict[date]) / (population_data[town] / 100000)
+                    population_data[town]["name"]: round(
+                        int(data_dict[date]) / (population_data[town]['population'] / 100000)
                     ),
                 },
             }
