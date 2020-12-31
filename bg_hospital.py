@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from bs4 import BeautifulSoup
-from influxdb import InfluxDBClient
 from datetime import datetime
 from influx_connection import client
 import requests
