@@ -51,7 +51,7 @@ if (
             "fields": {
                 "hospitalized": pull_stats("hospitalized"),
                 "in_icu": pull_stats("in_icu"),
-                "vaccinated": rate("vaccinated"),
+                "vaccinated": pull_stats("vaccinated"),
             },
         }
     ]
