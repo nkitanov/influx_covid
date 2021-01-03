@@ -108,7 +108,7 @@ def weekly_rate(country):
     q = client.query(
         "select difference(last(confirmed)) from data where region='"
         + country
-        + "' and time > 1579651200 group by time(1w) fill(none)"
+        + "' and time > 1579651200 group by time(1w, 4d) fill(none)"
     )
     lst = list(q.get_points())
     try:
