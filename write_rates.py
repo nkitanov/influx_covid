@@ -4,16 +4,7 @@ import sys
 from influxdb import InfluxDBClient
 from country_list import country_list
 from get_data import db_current
-from covid import Covid
-
-# Influx host is different if I run it from my Win PC
-if sys.platform == "linux":
-    influx_host = "localhost"
-else:
-    influx_host = "35.207.86.81"
-
-client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
-covid = Covid(source="worldometers")
+from influx_connection import client
 
 
 def db_daily_rate(country):
@@ -42,81 +33,6 @@ def db_weekly_rate(country):
         return l[0]["last"]
     else:
         return 0
-
-
-def db_death_rate(country):
-    # Return last death rate value
-    q = client.query(
-        "select last(death_rate) from rates where region = '" + country + "'"
-    )
-    l = list(q.get_points())
-    try:
-        return l[0]["last"]
-    except IndexError:
-        return None
-
-
-def population(country):
-    population = 0
-
-    if country == "Global":
-        # Calculate Global population by iterating all countries
-        all_countries = covid.list_countries()
-        for country in all_countries:
-            population += covid.get_status_by_country_name(country)["population"]
-        return float(population)
-    else:
-        q = client.query("select last(population) from data where region = '" + country + "'")
-        l = list(q.get_points())
-        population = float(l[0]["last"])
-        return population
-
-
-def death_rate(country):
-    # Return dict like {'percent': 13.28, 'dpm': 237.09, 'country': 'United Kingdom'}
-    d = {}
-    q = client.query("select last(*) from data where region = '" + country + "'")
-    l = list(q.get_points())
-    d["percent"] = round((l[0]["last_deaths"] / l[0]["last_confirmed"]) * 100, 2)
-    d["dpm"] = round(l[0]["last_deaths"] / (population(country) / 1e6), 2)
-    d["country"] = country
-    return d
-
-
-def db_test_rate(country):
-    # Return last test rate per milion value
-    q = client.query(
-        "select last(tested_milion) from rates where region='" + country + "'",
-        epoch="s",
-    )
-    l = list(q.get_points())
-    try:
-        return l[0]["last"]
-    except IndexError:
-        return 0
-
-
-def test_rate(country):
-    # Return dict like:
-    # {'tested_milion': 6694.0, 'tested_confirmed': 30.0,
-    #  'projected_positives': 231615.0, 'projected_positives_percent': 3.33,
-    #  'country': 'Bulgaria'}
-    d = {}
-
-    q = client.query("select last(*) from data where region = '" + country + "'")
-    l = list(q.get_points())
-    d["tested_milion"] = round((l[0]["last_tested"] / (population(country) / 1e6)), 0)
-    d["tested_confirmed"] = round(l[0]["last_tested"] / db_current(country), 0)
-    if l[0]["last_tested"] > 0:
-        d["projected_positives"] = round(population(country) / d["tested_confirmed"], 0)
-        d["projected_positives_percent"] = round(
-            (d["projected_positives"] / population(country) * 100), 2
-        )
-    else:
-        d["projected_positives"] = 0
-        d["projected_positives_percent"] = 0
-    d["country"] = country
-    return d
 
 
 def db_timedouble(country):
@@ -242,35 +158,3 @@ for country in country_list:
             }
         ]
         client.write_points(json, time_precision="s")
-
-    death_rate_dict = death_rate(country)
-    if db_death_rate(country) != death_rate_dict["percent"]:
-        json = [
-            {
-                "measurement": "rates",
-                "tags": {"region": country},
-                "fields": {
-                    "death_rate": death_rate_dict["percent"],
-                    "death_pm": death_rate_dict["dpm"],
-                },
-            }
-        ]
-        client.write_points(json)
-
-    test_rate_dict = test_rate(country)
-    if db_test_rate(country) != test_rate_dict["tested_milion"]:
-        json = [
-            {
-                "measurement": "rates",
-                "tags": {"region": country},
-                "fields": {
-                    "tested_milion": test_rate_dict["tested_milion"],
-                    "tested_confirmed": test_rate_dict["tested_confirmed"],
-                    "projected_positives": float(test_rate_dict["projected_positives"]),
-                    "projected_positives_percent": float(
-                        test_rate_dict["projected_positives_percent"]
-                    ),
-                },
-            }
-        ]
-        client.write_points(json)
