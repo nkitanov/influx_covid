@@ -5,20 +5,15 @@ from covid import Covid
 from influxdb import InfluxDBClient
 from country_list import country_list, continents_dictionary
 from datetime import datetime
+from influx_connection import client
 
-# Influx host is different if I run it from my Win PC
-if sys.platform == "linux":
-    influx_host = "localhost"
-else:
-    influx_host = "35.207.86.81"
 
-client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
 covid = Covid(source="worldometers")
 
 d = {}
 global_tests = 0
 global_population = 0
-utc_hour = int(datetime.utcnow().strftime('%H'))
+utc_hour = int(datetime.utcnow().strftime("%H"))
 
 
 def db_tested(country):
@@ -28,6 +23,7 @@ def db_tested(country):
         return lst[-1]["last"]
     except IndexError:
         return 0
+
 
 def db_current(country):
     q = client.query("select last(confirmed) from data where region='" + country + "'")
@@ -114,7 +110,7 @@ if __name__ == "__main__":
 
         # Update db only if there is change in confirmed
         if d[country]["confirmed"] != db_current(country):
-            # For Bulgaria do not update between 00 and 3AM local as it aggregates for 
+            # For Bulgaria do not update between 00 and 3AM local as it aggregates for
             # the previous day (they update at 1-2 AM usually) since influx uses UTC
             if country != "Bulgaria":
                 client.write_points(json)
@@ -127,9 +123,7 @@ if __name__ == "__main__":
                 {
                     "measurement": "data",
                     "tags": {"region": country},
-                    "fields": {
-                        "tested": d[country]["total_tests"],
-                    },
+                    "fields": {"tested": d[country]["total_tests"],},
                 }
             ]
             if country != "Bulgaria":
