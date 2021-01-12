@@ -6,13 +6,13 @@ import requests
 import sys
 
 
-URL = "https://coronavirus.bg/bg/news"
+URL = "https://coronavirus.bg/bg/"
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
 utc_hour = int(datetime.utcnow().strftime("%H"))
 
 stats = soup.find(
-    "div", attrs={"class": "row statistics-container inner-page-statistics"}
+    "div", attrs={"class": "row statistics-container"}
 )
 
 
