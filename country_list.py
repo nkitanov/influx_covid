@@ -29,7 +29,10 @@ country_list = [
     "South America",
     "Africa",
     "Oceania",
-    "Morocco"
+    "Morocco",
+    "Austria",
+    "Czechia",
+    "Israel"
 ]
 
 continents_dictionary = {

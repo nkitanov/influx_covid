@@ -5,7 +5,7 @@ from influxdb import InfluxDBClient
 client = InfluxDBClient(host="35.207.86.81", port=8086, database="covid_global")
 
 # Control manually list of countries to import (don't import from country_list)
-country_list = ["Europe", "North America", "South America", "Asia", "Africa"]
+country_list = ["Austria", "Czechia", "Israel"]
 
 
 def db_current_daily(country):
@@ -22,7 +22,7 @@ def db_current_weekly(country):
     q = client.query(
         "select difference(last(confirmed)) from data where region='"
         + country
-        + "' and time > 1579651200 group by time(1w)"
+        + "' and time > 1579651200 group by time(1w, 4d)"
     )
     lst = list(q.get_points())
     return lst
@@ -111,6 +111,7 @@ for country in country_list:
             }
         ]
         client.write_points(json, time_precision="s")
+        print(json)
 
     lst = rate(country, "1w")
     for x in lst:
@@ -123,6 +124,7 @@ for country in country_list:
             }
         ]
         client.write_points(json)
+        print(json)
 
     lst = rate(country, "1d")
     for x in lst:
@@ -135,3 +137,4 @@ for country in country_list:
             }
         ]
         client.write_points(json)
+        print(json)
