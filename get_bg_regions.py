@@ -37,7 +37,7 @@ population_yaml = """
         name: Kardzhali
     KNL_ALL:
         population: 116915
-        name: Kazanlak
+        name: Kyustendil
     LOV_ALL:
         population: 122546
         name: Lovech
