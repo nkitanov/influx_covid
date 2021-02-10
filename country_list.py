@@ -32,7 +32,8 @@ country_list = [
     "Morocco",
     "Austria",
     "Czechia",
-    "Israel"
+    "Israel",
+    "Portugal"
 ]
 
 continents_dictionary = {
