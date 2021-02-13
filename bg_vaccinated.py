@@ -119,23 +119,29 @@ def data_total():
     while index < len(raw_data):
         total = raw_data[index + 1].text
         comirnaty = raw_data[index + 2].text
-        moderna = raw_data[index + 3].text
-        total_doses = raw_data[index + 4].text
+        astra = raw_data[index + 3].text
+        moderna = raw_data[index + 4].text
+        total_doses = raw_data[index + 5].text
         if total == "-":
             total = 0
         if comirnaty == "-":
             comirnaty = 0
         if moderna == "-":
             moderna = 0
+        if astra == "-":
+            astra = 0
         d[population_data[raw_data[index].text]["name"]] = {
             "total": int(total),
+            "astra": int(astra),
             "comirnaty": int(comirnaty),
             "moderna": int(moderna),
             "total_doses": int(total_doses),
         }
-        index += 5
+        index += 6
     return d
 
+
+print(data_total())
 
 # List data as percent of polulation as dict
 # {'Blagoevgrad': 0.0028, 'Burgas': 0.0026, 'Varna': 0.0037, 'Veliko Tarnovo': 0.0027 ...
@@ -148,7 +154,7 @@ def data_percent():
             / population_data[raw_data[index].text]["population"],
             4,
         )
-        index += 5
+        index += 6
     return d
 
 
