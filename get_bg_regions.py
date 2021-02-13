@@ -92,6 +92,8 @@ population_yaml = """
     JAM_ALL:
         population: 117335
         name: Yambol
+    TOTAL:
+        population: 6951482
 """
 
 opendata = Opendata("cb5d7df0-3066-4d7a-b4a1-ac26525e0f0c")
@@ -121,3 +123,14 @@ for town in region_list:
         ]
         client.write_points(json)
 
+# Write totals for today
+json = [
+    {
+        "measurement": "bg_regions",
+        "time": today.replace('/', '-') + "T00:00:00Z",  # Time in influx format
+        "fields": {
+            "Total": round(int((opendata.total()[today.replace('/', '-')]) / (population_data['TOTAL']['population'] / 100000))),
+        },
+    }
+]
+client.write_points(json)
