@@ -141,8 +141,6 @@ def data_total():
     return d
 
 
-print(data_total())
-
 # List data as percent of polulation as dict
 # {'Blagoevgrad': 0.0028, 'Burgas': 0.0026, 'Varna': 0.0037, 'Veliko Tarnovo': 0.0027 ...
 def data_percent():
