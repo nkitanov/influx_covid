@@ -118,71 +118,69 @@ def data_total():
     d = {}
     while index < len(raw_data):
         total = raw_data[index + 1].text
-        comirnaty = raw_data[index + 2].text
-        astra = raw_data[index + 3].text
-        moderna = raw_data[index + 4].text
-        total_doses = raw_data[index + 5].text
+        total_doses = raw_data[index + 6].text
         if total == "-":
             total = 0
-        if comirnaty == "-":
-            comirnaty = 0
-        if moderna == "-":
-            moderna = 0
-        if astra == "-":
-            astra = 0
         d[population_data[raw_data[index].text]["name"]] = {
             "total": int(total),
-            "astra": int(astra),
-            "comirnaty": int(comirnaty),
-            "moderna": int(moderna),
             "total_doses": int(total_doses),
         }
-        index += 6
+        index += 7
     return d
 
 
-# List data as percent of polulation as dict
+# List vaccinated with second dose as percent of polulation as dict
 # {'Blagoevgrad': 0.0028, 'Burgas': 0.0026, 'Varna': 0.0037, 'Veliko Tarnovo': 0.0027 ...
 def data_percent():
     index = 0
     d = {}
     while index < len(raw_data):
         d[population_data[raw_data[index].text]["name"]] = round(
-            int(raw_data[index + 1].text)
+            int(raw_data[index + 6].text)
             / population_data[raw_data[index].text]["population"],
             4,
         )
-        index += 6
+        index += 7
     return d
 
 
 def data_second_dose():
     d = {}
     for region in population_data:
-        d[population_data[region]["name"]] = data_total[
-            population_data[region]["name"]
-        ]["total_doses"]
+        en_name = population_data[region]["name"]
+        d[en_name] = data_total()[en_name]["total_doses"]
     return d
 
 
 # Generate simplified dict for import totals in influx as the data_total function provides more data
 data_all = {}
-data_total = data_total()
 for region in population_data:
-    data_all[population_data[region]["name"]] = data_total[
+    data_all[population_data[region]["name"]] = data_total()[
         population_data[region]["name"]
     ]["total"]
 
 json_total = [
-    {"measurement": "bg_vaccinated_total", "time": time, "fields": data_all,},
+    {
+        "measurement": "bg_vaccinated_total",
+        "time": time,
+        "fields": data_all,
+    },
 ]
 
 json_percent = [
-    {"measurement": "bg_vaccinated_percent", "time": time, "fields": data_percent(),}
+    {
+        "measurement": "bg_vaccinated_percent",
+        "time": time,
+        "fields": data_percent(),
+    }
 ]
 
 json_second_dose = [
-    {"measurement": "bg_vaccinated_second", "time": time, "fields": data_second_dose(),}
+    {
+        "measurement": "bg_vaccinated_second",
+        "time": time,
+        "fields": data_second_dose(),
+    }
 ]
 
 if utc_hour < 21:
