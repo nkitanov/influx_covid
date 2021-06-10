@@ -6,94 +6,94 @@ from datetime import date
 import yaml
 
 
-# Население към 31.12.2019
+# Население към 31.12.2020
 population_yaml = """
     BLG_ALL: 
-        population: 302694
+        population: 301138
         name: Blagoevgrad
     BGS_ALL:
-        population: 409265
+        population: 409750
         name: Burgas
     VAR_ALL: 
-        population: 469885
+        population: 470124
         name: Varna
     VTR_ALL:
-        population: 232568
+        population: 229718
         name: Veliko Tarnovo
     VID_ALL:
-        population: 82835
+        population: 81212
         name: Vidin
     VRC_ALL: 
-        population: 159470
+        population: 157637
         name: Vratsa
     GAB_ALL:
-        population: 106598
+        population: 105788
         name: Gabrovo
     DOB_ALL:
-        population: 171809
+        population: 170298
         name: Dobrich
     KRZ_ALL:
-        population: 158204
+        population: 160781
         name: Kardzhali
     KNL_ALL:
-        population: 116915
+        population: 116619
         name: Kyustendil
     LOV_ALL:
-        population: 122546
+        population: 122490
         name: Lovech
     MON_ALL:
-        population: 127001
+        population: 125395
         name: Montana
     PAZ_ALL:
-        population: 252776
+        population: 251300
         name: Pazardzhik
     PER_ALL:
-        population: 119190
+        population: 120426
         name: Pernik
     PVN_ALL:
-        population: 236305
+        population: 233438
         name: Pleven
     PDV_ALL:
-        population: 666801
+        population: 666398
         name: Plovdiv
     RAZ_ALL:
-        population: 110789
+        population: 109810
         name: Razgrad
     RSE_ALL:
-        population: 215477
+        population: 212729
         name: Ruse
     SLS_ALL:
-        population: 108018
+        population: 106852
         name: Silistra
     SLV_ALL:
-        population: 184119
+        population: 182551
         name: Sliven
     SML_ALL:
-        population: 103532
+        population: 101887
         name: Smolyan
     SFO_ALL:
-        population: 226671
+        population: 238476
         name: Sofia-obl
     SOF_ALL:
-        population: 1328790
+        population: 1308412
         name: Sofia-town
     SZR_ALL:
-        population: 313396
+        population: 311400
         name: Stara Zagora
     TGV_ALL:
-        population: 110914
+        population: 110027
         name: Targovishte
     HKV_ALL:
-        population: 225317
+        population: 223625
         name: Haskovo
     SHU_ALL:
-        population: 172262
+        population: 171781
         name: Shumen
     JAM_ALL:
-        population: 117335
+        population: 116486
         name: Yambol
     TOTAL:
-        population: 6951482
+        population: 6916548
 """
 
 opendata = Opendata("cb5d7df0-3066-4d7a-b4a1-ac26525e0f0c")
