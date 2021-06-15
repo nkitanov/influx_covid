@@ -66,6 +66,14 @@ for region in population_data:
             "name": "Total",
         }
 
+# Now create English dict with population. It's a shitty code!!! Hove to redo it.
+population_dict_en = {}
+for town in population_dict:
+    population_dict_en[population_dict[town]["name"]] = population_dict[town][
+        "population"
+    ]
+
+
 # List total vaccinated data as dict
 # {'Blagoevgrad': {'total': 842, 'total_doses': 177},
 def data_total():
@@ -84,18 +92,12 @@ def data_total():
     return d
 
 
-# List vaccinated with second dose as percent of polulation as dict
+# List vaccinated 'total' or 'total_doses' (partially or fully vaccinated)
 # {'Blagoevgrad': 0.0028, 'Burgas': 0.0026, 'Varna': 0.0037, 'Veliko Tarnovo': 0.0027 ...
-def data_percent():
-    index = 0
+def data_percent(what):
     d = {}
-    while index < len(raw_data):
-        d[population_dict[raw_data[index].text]["name"]] = round(
-            int(raw_data[index + 6].text)
-            / population_dict[raw_data[index].text]["population"],
-            4,
-        )
-        index += 7
+    for town in data_total():
+        d[town] = round(data_total()[town][what] / population_dict_en[town], 4)
     return d
 
 
@@ -126,7 +128,15 @@ json_percent = [
     {
         "measurement": "bg_vaccinated_percent",
         "time": time,
-        "fields": data_percent(),
+        "fields": data_percent("total_doses"),
+    }
+]
+
+json_partial = [
+    {
+        "measurement": "bg_vaccinated_partial",
+        "time": time,
+        "fields": data_percent("total"),
     }
 ]
 
@@ -142,3 +152,4 @@ if utc_hour < 21:
     client.write_points(json_total)
     client.write_points(json_percent)
     client.write_points(json_second_dose)
+    client.write_points(json_partial)
