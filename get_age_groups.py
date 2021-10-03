@@ -28,7 +28,7 @@ opendata = Opendata("8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8")
 data = opendata.data()
 
 # Generate json body with influx data for the last 1w only
-for record in data[-14:]:
+for record in data[-7:]:
     total = 0
     day = [ '0' if x == '-' else x for x in record ]
     time = day[0].replace("/", "-") + "T00:00:00Z"  # Time in influx format
