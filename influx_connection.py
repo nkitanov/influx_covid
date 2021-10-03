@@ -5,6 +5,6 @@ from influxdb import InfluxDBClient
 if sys.platform == "linux":
     influx_host = "localhost"
 else:
-    influx_host = "35.207.86.81"
+    influx_host = "192.168.1.30"
 
 client = InfluxDBClient(host=influx_host, port=8086, database="covid_global")
