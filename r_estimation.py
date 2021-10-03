@@ -42,13 +42,15 @@ def estimate(country):
 
         if end_2 < len(points_list):
             try:
-                d[points_list[index]["time"]] = round(
-                    diff_ranges(points_list[start_1:end_1])
-                    / diff_ranges(points_list[start_2:end_2]),
-                    3,
+                d[points_list[index]["time"]] = float(
+                    round(
+                        diff_ranges(points_list[start_1:end_1])
+                        / diff_ranges(points_list[start_2:end_2]),
+                        3,
+                    )
                 )
             except ZeroDivisionError or TypeError:
-                d[points_list[index]["time"]] = 0
+                d[points_list[index]["time"]] = 0.0
         index += 1
         if index > 2:  # List only last few dates
             break
@@ -61,8 +63,7 @@ for country in country_list:
             "measurement": "data",
             "tags": {"region": country},
             "time": day_back(today),
-            "fields": {"r_estim": estimate(country)[today]},
+            "fields": {"r_estim_new": estimate(country)[today]},
         }
     ]
     client.write_points(json)
-
