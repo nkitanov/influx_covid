@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
-from influxdb import InfluxDBClient
 from country_list import country_list
-from get_data import db_current
 from influx_connection import client
 
 
