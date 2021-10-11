@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import requests
 from influx_connection import client
 from opendata import Opendata
 

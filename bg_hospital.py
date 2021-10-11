@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from influx_connection import client
 import requests
-import sys
 
 
 URL = "https://coronavirus.bg/bg/"

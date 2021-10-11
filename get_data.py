@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
 from covid import Covid
-from influxdb import InfluxDBClient
 from country_list import country_list, continents_dictionary
 from datetime import datetime
 from influx_connection import client
