@@ -88,7 +88,7 @@ def data_total():
             "total": int(total),
             "total_doses": int(total_doses),
         }
-        index += 7
+        index += 8
     return d
 
 
