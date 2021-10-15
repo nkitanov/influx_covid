@@ -94,12 +94,23 @@ population_yaml = """
         name: Yambol
     TOTAL:
         population: 6916548
+        name: Total
 """
 
 opendata = Opendata("cb5d7df0-3066-4d7a-b4a1-ac26525e0f0c")
 population_data = yaml.safe_load(population_yaml)
 today = date.today().strftime("%Y/%m/%d")
 region_list = []
+
+
+def town_data(town):
+    q = client.query(
+        'select last("{}") from bg_regions group by time(1d) order by time desc limit 15'.format(
+            town
+        )
+    )
+    return list(q.get_points())
+
 
 # Leave only ALL columns excluding active
 for town in opendata.columns():
@@ -116,7 +127,8 @@ for town in region_list:
                 "time": time,
                 "fields": {
                     population_data[town]["name"]: round(
-                        int(data_dict[date]) / (population_data[town]['population'] / 100000)
+                        int(data_dict[date])
+                        / (population_data[town]["population"] / 100000)
                     ),
                 },
             }
@@ -127,10 +139,29 @@ for town in region_list:
 json = [
     {
         "measurement": "bg_regions",
-        "time": today.replace('/', '-') + "T00:00:00Z",  # Time in influx format
+        "time": today.replace("/", "-") + "T00:00:00Z",  # Time in influx format
         "fields": {
-            "Total": round(int((opendata.total()[today.replace('/', '-')]) / (population_data['TOTAL']['population'] / 100000))),
+            "Total": round(
+                int(
+                    (opendata.total()[today.replace("/", "-")])
+                    / (population_data["TOTAL"]["population"] / 100000)
+                )
+            ),
         },
     }
 ]
 client.write_points(json)
+
+# Calculate 14 days cases and push to the calculated measurement
+for region in population_data:
+    town = population_data[region]["name"]
+    data = town_data(town)
+
+    json = [
+        {
+            "measurement": "bg_regions_calculated",
+            "time": today.replace("/", "-") + "T00:00:00Z",  # Time in influx format
+            "fields": {town: data[0]['last'] - data[14]['last']},
+        },
+    ]
+    client.write_points(json)
